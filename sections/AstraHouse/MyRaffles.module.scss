@@ -1,0 +1,35 @@
+.MuiTableContainer-root {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.MuiTableCell-root {
+  color: var(--color-natural-grey) !important;
+  border-right: 1px solid #E1E3DF !important;
+  border-bottom: 1px solid #E1E3DF !important;
+  font-family: var(--font-family-body) !important;
+  line-height: 1 !important;
+}
+
+.MuiTableCell-head {
+  padding: 10px 16px !important;
+  color: var(--color-natural-bone) !important;
+  text-transform: uppercase;
+  border-top: 1px solid #E1E3DF !important;
+  border-bottom: 1px solid #E1E3DF !important;
+}
+
+.dark-mode .MuiTableCell-root {
+  border-right: 1px solid var(--color-natural-grey) !important;
+  border-bottom: 1px solid var(--color-natural-grey) !important;
+}
+
+.dark-mode .MuiTableCell-root:last-of-type,
+.MuiTableCell-root:last-of-type {
+  border-right: 0 !important;
+}
+
+.dark-mode .MuiTableCell-head {
+  border-top: 1px solid var(--color-natural-grey) !important;
+  border-bottom: 1px solid var(--color-natural-grey) !important;
+}
