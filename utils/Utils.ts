@@ -15,15 +15,11 @@ class Utils{
         let id:NodeJS.Timeout | undefined;
     
         const start = () => new Promise(resolve => {
-            if (id === undefined) {
-                throw new Error('Timer already aborted');
-            }
-    
             id = setTimeout(resolve, ms);
         });
     
         const abort = () => {
-            if (id === undefined) {
+            if (id !== undefined) {
                 clearTimeout(id);
                 id = undefined;
             }
