@@ -51,7 +51,7 @@ return (
         <li><a href="/" className="navbar-nav-item">Dashboard</a></li>
         <li><a href="/office" className="navbar-nav-item">Office</a></li>
         <li><a href="/field-work" className="navbar-nav-item">Field Work</a></li>
-        <li><a href="/auction-house" className="navbar-nav-item">Auction House</a></li>
+        <li><a href="/astra-house" className="navbar-nav-item">Auction House</a></li>
         <li><a href="/" className="navbar-nav-item navbar-nav-item--inactive">Locker</a></li>
         <li className='m-t-lg'>
             <WalletMultiButton className="wallet-adapter-button-custom m-b-sm" />
@@ -76,7 +76,7 @@ return (
             <a href="/" className="navbar-nav-item">Dashboard</a>
             <a href="/office" className="navbar-nav-item">Office</a>
             <a href="/field-work" className="navbar-nav-item">Field Work</a>
-            <a href="/auction-house" className="navbar-nav-item">Auction House</a>
+            <a href="/astra-house" className="navbar-nav-item">Astra House</a>
             <a href="/" className="navbar-nav-item navbar-nav-item--inactive">Locker</a>
         </div>
 

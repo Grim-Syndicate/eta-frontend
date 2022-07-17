@@ -1,10 +1,33 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Grid from '@mui/material/Grid';
 import styles from './Event.module.scss'
+import { GrimsContext } from '../../components/GrimsProvider';
+import { AstraRaffle } from '../../models/AstraHouse';
+import GetRaffleWinners from '../../components/GetRaffleWinners';
 
 const AstraHousePastEvent = (props:any) => {
+  const { canCreateRaffle } = useContext(GrimsContext);
+
+  const [isOpenCreateRaffleModal, setOpenUpdateRaffleModal] = React.useState(false);
+  const handleOpenUpdateRaffleModal = () => {
+    setOpenUpdateRaffleModal(true);
+  }
+
+  const handleCloseUpdateRaffleModal = () => {
+    setOpenUpdateRaffleModal(false);
+  }
+
+  const handleRaffleUpdated = (raffle: AstraRaffle) => {
+    props.raffleUpdated(raffle)
+  }
   return (
     <>
+    <GetRaffleWinners
+      isEditing={true}
+      raffle={props.auction}
+      isOpen={isOpenCreateRaffleModal}
+      modalClosed={handleCloseUpdateRaffleModal}
+      raffleSet={ (raffle: AstraRaffle) => handleRaffleUpdated(raffle) } />
     
     <Grid columns={24} container spacing={4}>
       <Grid item xs={24} md={6} lg={4}><img src={props.auction.image} className={`${styles['auction-image']} has-border-radius-lg`} /></Grid>
@@ -14,6 +37,10 @@ const AstraHousePastEvent = (props:any) => {
             <div className={`${styles['auction-tag']} ${styles['is-raffle']} is-uppercase`}>
               <img src="/img/icon-plane-boarding-pass.svg" alt="Raffle icon" title="Raffle" /><span className={`${styles['auction-tag-type']}`}>Raffle</span>
             </div>
+          </Grid>
+          
+          <Grid item className="has-text-right">
+            {canCreateRaffle && (<button className="button is-tertiary is-small is-fullwidth m-b-sm" onClick={handleOpenUpdateRaffleModal}>Finish Raffle</button>)}
           </Grid>
         </Grid>
 

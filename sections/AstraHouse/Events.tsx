@@ -6,6 +6,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import Utils from "../../utils/Utils";
 import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
+import { AstraRaffle } from '../../models/AstraHouse';
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -13,10 +14,11 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
   const { publicKey, wallet, sendTransaction, signTransaction } = useWallet();
 
   const [isLoadingAuctionEvents, setIsLoadingAuctionEvents] = useState(true);
-  const [auctionEvents, setAuctionEvents] = useState([]);
+  const [auctionEvents, setAuctionEvents] = useState<Array<AstraRaffle>>([]);
+  const [inactiveAuctions, setInactiveAuctions] = useState<Array<AstraRaffle>>([]);
 
   const [isLoadingPastRaffles, setIsLoadingPastRaffles] = useState(true);
-  const [pastRaffles, setPastRaffles] = useState([]);
+  const [pastRaffles, setPastRaffles] = useState<Array<AstraRaffle>>([]);
 
   useEffect(() => {
     async function data() {
@@ -45,11 +47,7 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
       }
 
       if (result?.data?.success && result?.data?.raffles) {
-        const activeRaffles = result.data.raffles.filter((auction:any) => {
-          return auction.enabled
-        })
-
-        setAuctionEvents(activeRaffles);
+        setAuctionEvents(result.data.raffles);
       }
     } catch (error) {
       console.error('Error:', error)
@@ -75,7 +73,7 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
       }
 
       if (result?.data?.success && result?.data?.raffles) {
-        const raffles = result.data.raffles.filter((auction:any) => {
+        const raffles: Array<AstraRaffle> = result.data.raffles.filter((auction:any) => {
           return auction.enabled
         })
 
@@ -110,6 +108,26 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
     setPointsBalance(pointBalance)
   }
 
+  const handleRaffleUpdated = (raffle: AstraRaffle) => {
+    const existingRaffle = auctionEvents.find(a => a._id === raffle._id);
+    if (existingRaffle) {
+
+      const newAuctionEvents = auctionEvents.filter(a => a._id !== raffle._id);
+      newAuctionEvents.push(raffle);
+
+      newAuctionEvents.sort((a, b) => {
+        return a.title?.localeCompare(b.title);
+
+      })
+      setAuctionEvents(newAuctionEvents);
+
+
+    } else {
+      console.log(`Couldn't find existing raffle with id ${raffle._id} to update`, raffle);
+    }
+
+  }
+
   return (
     <div>
       {isLoadingAuctionEvents && <div className="has-font-heading">Loading raffles...</div>}
@@ -120,7 +138,7 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
           {auctionEvents.map((auction:any) =>
           <Grid item sm={12} md={24} key={auction._id}>
             <div className="box-light p-md has-border-radius-md">
-              <AstraHouseEvent auction={auction} pointsBalance={pointsBalance} updatePointBalance={updateAstraBalance} />
+              <AstraHouseEvent raffle={auction} pointsBalance={pointsBalance} updatePointBalance={updateAstraBalance} raffleUpdated={handleRaffleUpdated} />
             </div>
           </Grid>
           )}
@@ -130,7 +148,7 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
       <h2 className="has-font-gooper-bold">Past Events</h2>
       {pastRaffles.length > 0 && (
         <Grid columns={24} container spacing={2} className="m-b-md">
-          {pastRaffles.map((auction:any) =>
+          {pastRaffles.map((auction:AstraRaffle) =>
           <Grid item sm={12} md={24} key={auction._id}>
             <div className="box-light p-md has-border-radius-md">
               <AstraHousePastEvent auction={auction} pointsBalance={pointsBalance} />

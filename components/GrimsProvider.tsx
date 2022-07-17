@@ -9,6 +9,7 @@ let WALLET_COOLDOWN_RATE = 1;
 const COOLDOWN_UNITS = 10; // used to show a more precise number when displaying the cooldown
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 const getStakedURL = domainURL + "/grims-state";
+const userRolesURL = domainURL + "/userRoles";
 
 function GrimsProvider({ children }:any) {
   const { publicKey } = useWallet();
@@ -18,6 +19,15 @@ function GrimsProvider({ children }:any) {
   const [isLoadingGrims, setIsLoadingGrims] = useState(false);
   const [stakedGrims, setStakedGrims] = useState<any[]>([]);
   const [grimsReady, setGrimsReady] = useState<any[]>([]);
+
+  const [userRoles, setUserRoles] = useState<Array<string>>([]);
+  const canCreateRaffle = userRoles && userRoles.includes("RAFFLE_CREATOR");
+
+  const loadRoles = async() => {
+    if (!publicKey) return;
+    let result = await axios.get(userRolesURL + "?wallet=" + publicKey.toString());
+    setUserRoles(result.data.roles);
+  }
 
   useEffect(() => {
     console.log('grims changed')
@@ -36,6 +46,7 @@ function GrimsProvider({ children }:any) {
   useEffect(() => {
     async function data() {
       setIsLoadingGrims(true);
+      await loadRoles();
       await loadGrims();
       setIsLoadingGrims(false);
     } 
@@ -151,7 +162,7 @@ function GrimsProvider({ children }:any) {
   }
 
   return (
-    <GrimsContext.Provider value={{grims, setGrims, daemons, setDaemons, grimsReady, setGrimsReady, loadGrims, isLoadingGrims, isUsingLedger, setIsUsingLedger}}>
+    <GrimsContext.Provider value={{grims, setGrims, daemons, setDaemons, grimsReady, setGrimsReady, loadGrims, isLoadingGrims, isUsingLedger, setIsUsingLedger, canCreateRaffle}}>
       {children}
     </GrimsContext.Provider>
   );

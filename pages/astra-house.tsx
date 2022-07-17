@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import Grid from '@mui/material/Grid';
@@ -12,6 +12,9 @@ import PublicSection from '../components/PublicSection';
 import Marketplaces from '../components/Marketplaces';
 import AstraHouseEvents from '../sections/AstraHouse/Events';
 import AstraHouseMyRaffles from '../sections/AstraHouse/MyRaffles';
+import { GrimsContext } from "../components/GrimsProvider";
+import { AstraRaffle } from "../models/AstraHouse";
+import ManageRaffle from "../components/ManageRaffle";
 
 const tabTheme = createTheme({
   palette: {
@@ -34,14 +37,35 @@ const tabTheme = createTheme({
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
 const AstraHouse = React.forwardRef((nftFunctions, ref) => { 
+  const { canCreateRaffle } = useContext(GrimsContext)
   const { publicKey, wallet, sendTransaction, signTransaction } = useWallet();
   const [sectionValue, setSectionValue] = React.useState('events');
+  const [isOpenCreateRaffleModal, setOpenCreateRaffleModal] = React.useState(false);
+  const handleOpenCreateRaffleModal = () => {
+    setOpenCreateRaffleModal(true);
+  }
+  const handleCloseCreateRaffleModal = () => {
+    setOpenCreateRaffleModal(false);
+  }
+
   const handleSectionChange = (event:any, newValue:string) => {
     setSectionValue(newValue);
   };
+  
+  const handleRaffleCreated = (raffle: AstraRaffle) => {
+  }
+  
+  const handleRaffleUpdated = (raffle: AstraRaffle) => {
+  }
 
   return wallet ? (
     <>
+      <ManageRaffle
+      isOpen={isOpenCreateRaffleModal}
+      isEditing={false}
+      raffle={undefined}
+      modalClosed={handleCloseCreateRaffleModal}
+      raffleSet={ handleRaffleCreated } />
       <div>
         <div className="title-bar p-md main-content-wrapper">
           <div className="container main-content-wrapper">
@@ -65,6 +89,12 @@ const AstraHouse = React.forwardRef((nftFunctions, ref) => {
               </ThemeProvider>
             </Grid>
           </Grid>
+          {canCreateRaffle && (
+            <div className="is-flex is-flex-justify-end m-b-sm">
+              <button className="button is-primary" onClick={handleOpenCreateRaffleModal}>Create Raffle</button>
+            </div>
+          )}
+
 
           {sectionValue == 'events' && <AstraHouseEvents />}
           {sectionValue == 'my_raffles' && <AstraHouseMyRaffles />}

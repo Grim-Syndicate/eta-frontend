@@ -17,7 +17,11 @@
   background-color: #e7def4;
   color: rgba(103, 51, 184, 1);
 }
-
+.auction-tag.is-not-enabled {
+  background-color: rgba(255, 51, 0, 1);
+  color: white;
+  margin-left: 10px;
+}
 .auction-image {
   width: 100%;
 }
