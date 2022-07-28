@@ -19,27 +19,29 @@ export class AstraRaffle {
     walletTickets: number = 0;
 
     winners: Array<string> = [];
+    type: "RAFFLE" | "AUCTION" = "AUCTION";
 
 }
 
-export interface AstraAuction {
-    _id: string;
-    author: string;
-    authorLink: string;
-    description: string;
-    enabled: boolean;
-    enabledFrom: number;
-    enabledTo: number;
-    image: string;
-    maxTickets: number;
-    numberOfWinners: number;
-    ticketPrice: number;
-    title: string;
-    totalTickets: number;
-    winnerCount: number;
+export class AstraAuction {
+    _id: string = "";
+    author: string = "";
+    authorLink: string = "";
+    description: string = "";
+    enabled: boolean = false;
+    enabledFrom: number = 0;
+    enabledTo: number = 0;
+    image: string = "";
+    title: string = "";
 
-    //How many tickets the user currently has
-    walletTickets: number;
+    currentBid: number = 0;
+    startingBid: number = 0;
+    tickSize: number = 0;
+
+    currentWinningWallet: string = "";
+
+    
+    type: string = "";
 
 }
 

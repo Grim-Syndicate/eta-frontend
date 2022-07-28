@@ -14,6 +14,7 @@ import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import styles from './Event.module.scss'
 import { AstraRaffle } from '../../models/AstraHouse';
 import ManageRaffle from '../../components/ManageRaffle';
+import GetRaffleWinners from '../../components/GetRaffleWinners';
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -31,6 +32,18 @@ const AstraHouseEvent_Raffle = (props: Props) => {
   // Time Remaining Date and Duration
   let loadDurationRefreshInterval:NodeJS.Timeout | undefined = undefined;
   const [durationTime, setDurationTime] = useState('')
+
+  const [hasEnded, setHasEnded] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (props.raffle) {
+      const date = new Date();
+      const now = Math.floor(date.getTime());
+
+      setHasEnded(now > props.raffle.enabledTo);
+    }
+  }, [props]);
+
   const getDuration = () => {
     const duration = intervalToDuration({
       start: new Date(),
@@ -236,12 +249,24 @@ const AstraHouseEvent_Raffle = (props: Props) => {
       </Alert>
     </Snackbar>
     
-    <ManageRaffle
-      isEditing={true}
-      raffle={props.raffle}
-      isOpen={isOpenCreateRaffleModal}
-      modalClosed={handleCloseUpdateRaffleModal}
-      raffleSet={ raffle => handleRaffleUpdated(raffle) } />
+    {!hasEnded && (
+      <ManageRaffle
+        isEditing={true}
+        raffle={props.raffle}
+        isOpen={isOpenCreateRaffleModal}
+        modalClosed={handleCloseUpdateRaffleModal}
+        raffleSet={ raffle => handleRaffleUpdated(raffle) } />
+    )}
+
+      
+    {hasEnded && (
+      <GetRaffleWinners
+          isEditing={true}
+          raffle={props.raffle as AstraRaffle}
+          isOpen={isOpenCreateRaffleModal}
+          modalClosed={handleCloseUpdateRaffleModal}/>
+    )}
+
 
     <Grid columns={24} container spacing={4}>
       <Grid item xs={24} md={8} lg={6}><img src={props.raffle.image} className={`${styles['auction-image']} has-border-radius-lg`} /></Grid>
@@ -258,9 +283,10 @@ const AstraHouseEvent_Raffle = (props: Props) => {
             )}
           </Grid>
           <Grid item className="has-text-right">
-            {canCreateRaffle && (<button className="button is-tertiary is-small is-fullwidth m-b-sm" onClick={handleOpenUpdateRaffleModal}>Edit</button>)}
+            {(canCreateRaffle && !hasEnded) && (<button className="button is-tertiary is-small is-fullwidth m-b-sm" onClick={handleOpenUpdateRaffleModal}>Edit</button>)}
+            {(canCreateRaffle && hasEnded) && (<button className="button is-tertiary is-small is-fullwidth m-b-sm" onClick={handleOpenUpdateRaffleModal}>Finish</button>)}
             <strong>{walletTickets}</strong> tickets purchased
-            </Grid>
+          </Grid>
         </Grid>
 
         <h2 className={`${styles['auction-title']} has-text-primary has-font-gooper-bold`}>{props.raffle.title}</h2>
@@ -289,30 +315,34 @@ const AstraHouseEvent_Raffle = (props: Props) => {
             <Grid item><strong>Total entries</strong></Grid>
             <Grid item>{totalTickets} entries</Grid>
           </Grid>
-          <Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
-            <Grid item><strong>Time remaining</strong></Grid>
-            <Grid item className="has-text-primary has-text-right">
-              <div>{durationTime}</div>
-              <div className="has-text-natural-bone"><small>{formattedDate}</small></div>
+          {!hasEnded && (
+            <Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
+              <Grid item><strong>Time remaining</strong></Grid>
+              <Grid item className="has-text-primary has-text-right">
+                <div>{durationTime}</div>
+                <div className="has-text-natural-bone"><small>{formattedDate}</small></div>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
         </div>
 
         <form onSubmit={handlePlaceBid} className={`${styles['auction-form']} form`} noValidate>
           <div className={`${styles['auction-form-input-container']}`}>
-            <div>
-              <input
-                id={`raffle-bid-${props.raffle._id}`}
-                type="number"
-                className="is-fullwidth"
-                placeholder="Enter # of raffle tickets"
-                min="1"
-                step="1"
-                value={raffleTicketAmount || ''}
-                disabled={isPlacingBid}
-                onChange={(e) => handleRaffleTicketCountChange(e, props.raffle)}
-              />
-            </div>
+            {!hasEnded && (
+              <div>
+                <input
+                  id={`raffle-bid-${props.raffle._id}`}
+                  type="number"
+                  className="is-fullwidth"
+                  placeholder="Enter # of raffle tickets"
+                  min="1"
+                  step="1"
+                  value={raffleTicketAmount || ''}
+                  disabled={isPlacingBid}
+                  onChange={(e) => handleRaffleTicketCountChange(e, props.raffle)}
+                />
+              </div>
+            )}
 
             <Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
               <Grid item>
@@ -327,7 +357,7 @@ const AstraHouseEvent_Raffle = (props: Props) => {
               </Grid>
             </Grid>
           </div>
-          <div className={`${styles['auction-form-button-container']}`}><button type="submit" className="button is-primary is-xl" disabled={isPlacingBid}>Buy Raffle Ticket</button></div>
+          {!hasEnded && (<div className={`${styles['auction-form-button-container']}`}><button type="submit" className="button is-primary is-xl" disabled={isPlacingBid}>Buy Raffle Ticket</button></div>)}
         </form>
       </Grid>
     </Grid>

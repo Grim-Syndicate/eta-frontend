@@ -39,7 +39,6 @@ interface Props {
 	raffle: AstraRaffle | undefined;
 	isOpen: boolean;
 	isEditing: boolean;
-	raffleSet: (raffle: AstraRaffle) => void;
 	modalClosed: () => void;
 }
 const GetRaffleWinners = (props: Props) => {
