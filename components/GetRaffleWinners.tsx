@@ -117,7 +117,7 @@ const GetRaffleWinners = (props: Props) => {
 						<div className="m-b-lg">
 							<div>Winners have successfully been rolled for this raffle!</div>
 							{winners.map((winner) => (
-								<div>{winner}</div>
+								<div key={winner}>{winner}</div>
 							))}
 						</div>
 					)}

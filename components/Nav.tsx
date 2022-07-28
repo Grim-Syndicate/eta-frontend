@@ -7,6 +7,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormSwitch from '@mui/material/Switch';
 import { GrimsContext } from './GrimsProvider';
+import Link from 'next/link';
 
 const Nav = () => {  
   const { isUsingLedger, setIsUsingLedger } = useContext(GrimsContext)
@@ -48,11 +49,11 @@ return (
     </header>
 
     {isOpenMobileMenu && <ul className="mobile-menu">
-        <li><a href="/" className="navbar-nav-item">Dashboard</a></li>
-        <li><a href="/office" className="navbar-nav-item">Office</a></li>
-        <li><a href="/field-work" className="navbar-nav-item">Field Work</a></li>
-        <li><a href="/astra-house" className="navbar-nav-item">Astra House</a></li>
-        <li><a href="/" className="navbar-nav-item navbar-nav-item--inactive">Locker</a></li>
+        <li><Link href="/"><a className="navbar-nav-item">Dashboard</a></Link></li>
+        <li><Link href="/office"><a className="navbar-nav-item">Office</a></Link></li>
+        <li><Link href="/field-work"><a className="navbar-nav-item">Field Work</a></Link></li>
+        <li><Link href="/astra-house"><a className="navbar-nav-item">Astra House</a></Link></li>
+        <li><Link href="/"><a className="navbar-nav-item navbar-nav-item--inactive">Locker</a></Link></li>
         <li className='m-t-lg'>
             <WalletMultiButton className="wallet-adapter-button-custom m-b-sm" />
             <div>
@@ -73,11 +74,11 @@ return (
         </div>
 
         <div className="navbar">
-            <a href="/" className="navbar-nav-item">Dashboard</a>
-            <a href="/office" className="navbar-nav-item">Office</a>
-            <a href="/field-work" className="navbar-nav-item">Field Work</a>
-            <a href="/astra-house" className="navbar-nav-item">Astra House</a>
-            <a href="/" className="navbar-nav-item navbar-nav-item--inactive">Locker</a>
+            <Link href="/"><a className="navbar-nav-item">Dashboard</a></Link>
+            <Link href="/office"><a className="navbar-nav-item">Office</a></Link>
+            <Link href="/field-work"><a className="navbar-nav-item">Field Work</a></Link>
+            <Link href="/astra-house"><a className="navbar-nav-item">Astra House</a></Link>
+            <Link href="/"><a className="navbar-nav-item navbar-nav-item--inactive">Locker</a></Link>
         </div>
 
         <div className="is-flex is-flex-align-center">
