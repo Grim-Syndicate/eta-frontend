@@ -349,7 +349,7 @@ const AstraHouseEvent_Auction = (props: Props) => {
 						{props.auction.currentBid > 0 && (
 							<Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
 								{hasEnded && (<Grid item><strong>Winning bid</strong></Grid>)}
-								{!hasEnded && (<Grid item><strong>Winning bid</strong></Grid>)}
+								{!hasEnded && (<Grid item><strong>Current winning bid</strong></Grid>)}
 								<Grid item>{auctionCurrentBid} $ASTRA</Grid>
 							</Grid>
 						)}
