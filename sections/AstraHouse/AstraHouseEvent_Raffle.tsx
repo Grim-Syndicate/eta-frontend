@@ -97,16 +97,16 @@ const AstraHouseEvent_Raffle = (props: Props) => {
     setTotalAstraPrice(totalAstra)
   }, [raffleTicketAmount])
 
-  const handleRaffleTicketCountChange = (event:any, _auction:any) => {
+  const handleRaffleTicketCountChange = (event: React.ChangeEvent<HTMLInputElement>, _auction:any) => {
     event.persist();
-    setRaffleTicketAmount(event.target.value);
+    setRaffleTicketAmount(event.target.valueAsNumber);
   };
 
   const handlePlaceBid = async (event:any) => {
     if(!publicKey) throw new WalletNotConnectedError()
     event.preventDefault()
 
-    const parsedTicketAmount = raffleTicketAmount
+    const parsedTicketAmount = Number(raffleTicketAmount)
     const canPlaceBid = canBid(parsedTicketAmount)
 
     if (!canPlaceBid) return
@@ -175,12 +175,6 @@ const AstraHouseEvent_Raffle = (props: Props) => {
       return false
     }
 
-    const isRaffleTicketAmountWholeNumber  = Number.isInteger(parsedTicketAmount)
-    if (!isRaffleTicketAmountWholeNumber) {
-      showNotification('Ticket amount must be in increments of 1', 'error')
-      return false
-    }
-    
     if(props.raffle.maxTickets > 0){
       const isRaffleTicketMountLessThanMax = parsedTicketAmount <= props.raffle.maxTickets
       if (!isRaffleTicketMountLessThanMax) {

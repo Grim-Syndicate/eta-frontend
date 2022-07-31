@@ -141,7 +141,7 @@ const AstraHouseEvent_Auction = (props: Props) => {
 
 	const handleAuctionNewBidChange = (event: any, _auction: any) => {
 		event.persist();
-		setAuctionNewBid(event.target.value);
+		setAuctionNewBid(event.target.valueAsNumber);
 	};
 
 	const handlePlaceBid = async (event: any) => {
