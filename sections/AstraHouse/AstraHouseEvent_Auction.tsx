@@ -144,12 +144,14 @@ const AstraHouseEvent_Auction = (props: Props) => {
 		if (!event.target.valueAsNumber) return;
 		if (!props.auction) return;
 
+		/*
 		const minNewBid = props.auction.currentBid > 0 ? props.auction.currentBid + props.auction.tickSize : props.auction.startingBid;
 		if (event.target.valueAsNumber < minNewBid) {
 			setAuctionNewBid(minNewBid);
 		} else {
 			setAuctionNewBid(event.target.valueAsNumber);
-		}
+		}*/
+		setAuctionNewBid(event.target.valueAsNumber);
 	};
 
 	const handlePlaceBid = async (event: any) => {
