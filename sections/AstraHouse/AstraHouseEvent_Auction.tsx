@@ -14,6 +14,7 @@ import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import styles from './Event.module.scss'
 import { AstraAuction } from '../../models/AstraHouse';
 import ManageAuction from '../../components/ManageAuction';
+import useInterval from '../../hooks/useInterval';
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -33,7 +34,6 @@ const AstraHouseEvent_Auction = (props: Props) => {
 
 	// Time Remaining Date and Duration
 	let loadDurationRefreshInterval: NodeJS.Timeout | undefined = undefined;
-	let refreshCurrentBidInterval: NodeJS.Timeout | undefined = undefined;
 	const [durationTime, setDurationTime] = useState('')
 	const getDuration = () => {
 		const duration = intervalToDuration({
@@ -46,7 +46,6 @@ const AstraHouseEvent_Auction = (props: Props) => {
 			delimiter: ' '
 		});
 
-		
 		const date = new Date();
 		const now = Math.floor(date.getTime());
 
@@ -76,6 +75,16 @@ const AstraHouseEvent_Auction = (props: Props) => {
 		}
 	}, [])
 
+
+	/* use useInterval for updating state otherwise you run into weird issues with setInterval
+	*/
+	const autoUpdateBid = props.auction && props.auction.enabled && !hasEnded;
+	const refreshCurrentBidInterval = useInterval(() => {
+		if (props.auction) {
+			getCurrentBid();
+		}
+	}, autoUpdateBid ? 5000 : null);
+
 	useEffect(() => {
 		const currentBid = props.auction.currentBid > 0 ? props.auction.currentBid : props.auction.startingBid;
 		setAuctionCurrentBid(currentBid);
@@ -88,16 +97,6 @@ const AstraHouseEvent_Auction = (props: Props) => {
 			const now = Math.floor(date.getTime());
 
 			setHasEnded(now > props.auction.enabledTo);
-		}
-
-		if (props.auction && props.auction.enabled) {
-			refreshCurrentBidInterval = setInterval(() => {
-				getCurrentBid();
-			}, 5000);
-		}
-
-		return () => {
-			clearInterval(refreshCurrentBidInterval)
 		}
 
 	}, [props.auction]);
@@ -141,7 +140,16 @@ const AstraHouseEvent_Auction = (props: Props) => {
 
 	const handleAuctionNewBidChange = (event: any, _auction: any) => {
 		event.persist();
-		setAuctionNewBid(event.target.valueAsNumber);
+
+		if (!event.target.valueAsNumber) return;
+		if (!props.auction) return;
+
+		const minNewBid = props.auction.currentBid > 0 ? props.auction.currentBid + props.auction.tickSize : props.auction.startingBid;
+		if (event.target.valueAsNumber < minNewBid) {
+			setAuctionNewBid(minNewBid);
+		} else {
+			setAuctionNewBid(event.target.valueAsNumber);
+		}
 	};
 
 	const handlePlaceBid = async (event: any) => {
@@ -375,7 +383,7 @@ const AstraHouseEvent_Auction = (props: Props) => {
 										type="number"
 										className="is-fullwidth"
 										placeholder={`Update current bid of ${auctionNewBid}`}
-										min="1"
+										min={auctionCurrentBid}
 										step={props.auction?.tickSize}
 										value={auctionNewBid || 0}
 										disabled={isPlacingBid}
