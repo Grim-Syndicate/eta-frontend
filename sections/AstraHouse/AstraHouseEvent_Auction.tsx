@@ -23,6 +23,7 @@ interface Props {
 	pointsBalance: number;
 	updatePointBalance: (updated: number) => void;
 	auctionUpdated: (auction: AstraAuction) => void;
+	onAuctionDeleted: (auction: AstraAuction) => void;
 }
 const AstraHouseEvent_Auction = (props: Props) => {
 	const { isUsingLedger, canCreateRaffle } = useContext(GrimsContext);
@@ -32,13 +33,16 @@ const AstraHouseEvent_Auction = (props: Props) => {
 	const [currentWinningWallet, setCurrentWinningWallet] = useState<string>("");
 	const [hasEnded, setHasEnded] = useState<boolean>(false);
 
+	const [enabledTo, setEnabledTo] = useState<number>(0);
+
+
 	// Time Remaining Date and Duration
 	let loadDurationRefreshInterval: NodeJS.Timeout | undefined = undefined;
 	const [durationTime, setDurationTime] = useState('')
 	const getDuration = () => {
 		const duration = intervalToDuration({
 			start: new Date(),
-			end: new Date(props.auction.enabledTo)
+			end: new Date(enabledTo)
 		});
 
 		const formattedDuration = formatDuration(duration, {
@@ -48,8 +52,7 @@ const AstraHouseEvent_Auction = (props: Props) => {
 
 		const date = new Date();
 		const now = Math.floor(date.getTime());
-
-		setHasEnded(now > props.auction.enabledTo);
+		setHasEnded(now > enabledTo);
 
 		setDurationTime(formattedDuration)
 	}
@@ -62,18 +65,6 @@ const AstraHouseEvent_Auction = (props: Props) => {
 
 		setFormattedDate(`${fd} @ ${ft}`)
 	}
-
-	useEffect(() => {
-		formatDate(props.auction.enabledTo)
-		loadDurationRefreshInterval = setInterval(() => {
-			getDuration()
-		}, 60)
-
-
-		return () => {
-			clearInterval(loadDurationRefreshInterval)
-		}
-	}, [])
 
 
 	/* use useInterval for updating state otherwise you run into weird issues with setInterval
@@ -93,13 +84,32 @@ const AstraHouseEvent_Auction = (props: Props) => {
 
 		if (props.auction) {
 			setCurrentWinningWallet(props.auction.currentWinningWallet);
+			setEnabledTo(props.auction.enabledTo);
 			const date = new Date();
 			const now = Math.floor(date.getTime());
 
-			setHasEnded(now > props.auction.enabledTo);
 		}
 
 	}, [props.auction]);
+
+	useEffect(() => {
+		const date = new Date();
+		const now = Math.floor(date.getTime());
+		setHasEnded(now > enabledTo);
+
+
+		formatDate(enabledTo)
+		loadDurationRefreshInterval = setInterval(() => {
+			getDuration()
+		}, 60)
+
+
+		return () => {
+			clearInterval(loadDurationRefreshInterval)
+		}
+
+	}, [enabledTo]);
+
 
 	const getCurrentBid = async () => {
 
@@ -112,6 +122,11 @@ const AstraHouseEvent_Auction = (props: Props) => {
 		}
 
 		const result = await axios.post(auctionInfoURL, data);
+
+		if (result?.data?.enabledTo) {
+			setEnabledTo(result?.data?.enabledTo);
+		}
+
 		if (result?.data?.newMinBid) {
 			if (result?.data?.newMinBid > auctionNewBid) {
 				setAuctionNewBid(result?.data?.newMinBid);
@@ -197,6 +212,10 @@ const AstraHouseEvent_Auction = (props: Props) => {
 					props.updatePointBalance(Number(Utils.formatPoints(`${props.pointsBalance - auctionNewBid}`)));
 				}
 
+				if (result?.data?.enabledTo) {
+					setEnabledTo(result?.data?.enabledTo);
+				}
+
 				if (result?.data?.newMinBid) {
 					if (result?.data?.newMinBid > auctionNewBid) {
 						setAuctionNewBid(result?.data?.newMinBid);
@@ -211,6 +230,11 @@ const AstraHouseEvent_Auction = (props: Props) => {
 
 				if (result?.data?.currentWinningWallet) {
 					setCurrentWinningWallet(result?.data?.currentWinningWallet);
+				}
+
+
+				if (result?.data?.pointsBalance && props.pointsBalance !== result?.data?.pointsBalance) {
+					props.updatePointBalance(Number(Utils.formatPoints(`${result?.data?.pointsBalance}`)));
 				}
 
 				if (result?.data?.error) {
@@ -286,7 +310,6 @@ const AstraHouseEvent_Auction = (props: Props) => {
 		props.auctionUpdated(auction)
 	}
 
-
 	return (
 		<>
 			<Snackbar
@@ -305,7 +328,8 @@ const AstraHouseEvent_Auction = (props: Props) => {
 				auction={props.auction}
 				isOpen={isOpenCreateAuctionModal}
 				modalClosed={handleCloseUpdateAuctionModal}
-				auctionSet={auction => handleAuctionUpdated(auction)} />
+				auctionSet={auction => { handleAuctionUpdated(auction); }}
+				onAuctionDelete={props.onAuctionDeleted} />
 
 			<Grid columns={24} container spacing={4}>
 				<Grid item xs={24} md={8} lg={6}><img src={props.auction.image} className={`${styles['auction-image']} has-border-radius-lg`} /></Grid>

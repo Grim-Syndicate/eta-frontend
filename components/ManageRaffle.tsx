@@ -178,8 +178,8 @@ const ManageRaffle = (props: Props) => {
 				return;
 			}
 
-			if (props.raffle) {
-				raffleFormValues._id = props.raffle._id!
+			if (result.data.id) {
+				raffleFormValues._id = result.data.id;
 			}
 			props.raffleSet(raffleFormValues)
 			// TODO if (!isEditing) props.raffleSet(res)

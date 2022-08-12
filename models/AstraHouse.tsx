@@ -19,7 +19,7 @@ export class AstraRaffle {
     walletTickets: number = 0;
 
     winners: Array<string> = [];
-    type: "RAFFLE" | "AUCTION" = "AUCTION";
+    type: string = "RAFFLE";
 
 }
 
@@ -41,7 +41,7 @@ export class AstraAuction {
     currentWinningWallet: string = "";
 
     
-    type: string = "";
+    type: string = "AUCTION";
 
 }
 

@@ -10,7 +10,8 @@ interface Props {
   //event: AstraEvent;
   pointsBalance: number;
   updatePointBalance: (updated: number) => void;
-  eventUpdated: (raffle: AstraRaffle | AstraAuction) => void;
+  eventUpdated: (event: AstraRaffle | AstraAuction) => void;
+	eventDeleted: (event: AstraAuction) => void;
 }
 const AstraHouseEvent = (props: Props) => { 
 
@@ -20,7 +21,7 @@ const AstraHouseEvent = (props: Props) => {
     return (<AstraHouseEvent_Raffle raffle={props.event as AstraRaffle} pointsBalance={props.pointsBalance} updatePointBalance={props.updatePointBalance} raffleUpdated={props.eventUpdated}/>);
   }
   if (props.event?.type === "AUCTION") {
-    return (<AstraHouseEvent_Auction auction={props.event as AstraAuction} pointsBalance={props.pointsBalance} updatePointBalance={props.updatePointBalance} auctionUpdated={props.eventUpdated}/>);
+    return (<AstraHouseEvent_Auction auction={props.event as AstraAuction} pointsBalance={props.pointsBalance} updatePointBalance={props.updatePointBalance} auctionUpdated={props.eventUpdated} onAuctionDeleted={props.eventDeleted} />);
   }
 
   return (<div></div>)

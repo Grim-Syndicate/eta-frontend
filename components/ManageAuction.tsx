@@ -15,6 +15,8 @@ import { GrimsContext } from "./GrimsProvider";
 import bs58 from "bs58";
 import toast, { Toaster } from 'react-hot-toast'
 import { AstraAuction } from "../models/AstraHouse";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const p2pModalStyle = {
 	display: 'flex',
@@ -47,6 +49,7 @@ interface Props {
 	isOpen: boolean;
 	isEditing: boolean;
 	auctionSet: (Auction: AstraAuction) => void;
+	onAuctionDelete: (Auction: AstraAuction) => void;
 	modalClosed: () => void;
 
 }
@@ -58,6 +61,9 @@ const ManageAuction = (props: Props) => {
 	const { isUsingLedger } = useContext(GrimsContext);
 	const { publicKey, wallet, signTransaction, signMessage } = useWallet();
 	const { connection } = useConnection();
+
+	const [showTryDeleteAuctionAlert, setShowTryDeleteAuctionAlert] = useState<boolean>(false);
+	const [confirmDeleteAuctionName, setConfirmDeleteAuctionName] = useState<string>("");
 
 	const [auctionFormValues, setauctionFormValues] = useState<AstraAuction>(new AstraAuction());
 	useEffect(() => {
@@ -178,8 +184,8 @@ const ManageAuction = (props: Props) => {
 				return;
 			}
 
-			if (props.auction) {
-				auctionFormValues._id = props.auction._id!
+			if (result.data.id) {
+				auctionFormValues._id = result.data.id;
 			}
 			props.auctionSet(auctionFormValues)
 			// TODO if (!isEditing) props.AuctionSet(res)
@@ -200,6 +206,124 @@ const ManageAuction = (props: Props) => {
 	const handleCloseModal = () => {
 		props.modalClosed()
 	}
+	const fastCreateExpiringAuction = async () => {
+
+		if (!publicKey) return;
+
+		const date = new Date();
+		const time = date.getTime();
+		let auction: AstraAuction = {
+			"author": "Test",
+			"authorLink": "Test",
+			"description": "Test auction, automatically generated to test a feature",
+			"enabled": true,
+			"enabledFrom": time - (3600 * 1000),
+			"enabledTo": time + (120 * 1000),
+			"image": "https://pbs.twimg.com/profile_images/1498641868397191170/6qW2XkuI_400x400.png",
+			"startingBid": 1,
+			"tickSize": 1,
+			"title": "Test",
+			currentBid: 0,
+			currentWinningWallet: "",
+			_id: "",
+			type: "AUCTION"
+		};
+		let data: any = {
+			id: null,
+			form: auction,
+			wallet: "",
+			message: "",
+		}
+		delete data.form._id;
+		data.wallet = publicKey.toString();
+
+
+		let verifData: any = {
+			form: auctionFormValues,
+			wallet: publicKey.toString()
+		}
+
+		let [signature, blockhash] = await WalletUtils.verifyWallet(connection, publicKey, 'create-edit-auction', verifData, isUsingLedger, signMessage, signTransaction);
+		if (!signature || (isUsingLedger && !blockhash)) {
+			setSendErrorMessage(`No signature or blockhash, try again`);
+			return;
+		}
+		data.message = bs58.encode(signature);
+		data.bh = blockhash;
+		if (props.auction) {
+			data.id = props.auction._id!;
+		}
+
+		try {
+			resetNotificationStates()
+
+			const manageAuctionURL = `${domainURL}/auction-house/create-auction`
+			const result = await axios.post(manageAuctionURL, data);
+
+			if (result.data.error) {
+				setCreateAuctionFailed(true);
+				setSendErrorMessage(result.data.error);
+				return;
+			}
+
+			if (result.data.id) {
+				auction._id = result.data.id;
+			}
+			props.auctionSet(auction)
+			setCreateAuctionSuccessful(true);
+		} catch (err) {
+			console.log("err", err);
+			setSendErrorMessage('Unable to create your Auction');
+		}
+	}
+
+	const tryDeleteAuction = async () => {
+		setShowTryDeleteAuctionAlert(true);
+	}
+
+	const deleteAuction = async () => {
+
+		if (!publicKey) return;
+		if (confirmDeleteAuctionName !== props.auction?.title) return;
+
+
+		let data: any = {
+			id: null,
+			auctionId: props.auction?._id,
+			wallet: publicKey.toString(),
+			message: "",
+		}
+
+		let verifData: any = {
+			auctionId: props.auction?._id,
+			wallet: publicKey.toString()
+		}
+
+		let [signature, blockhash] = await WalletUtils.verifyWallet(connection, publicKey, 'delete-event', verifData, isUsingLedger, signMessage, signTransaction);
+		if (!signature || (isUsingLedger && !blockhash)) {
+			setSendErrorMessage(`No signature or blockhash, try again`);
+			return;
+		}
+
+		data.message = bs58.encode(signature);
+		data.bh = blockhash;
+		if (props.auction) {
+			data.id = props.auction._id!;
+		}
+
+		const manageAuctionURL = `${domainURL}/auction-house/delete-auction`
+		const result = await axios.post(manageAuctionURL, data);
+
+		if (result.data.error) {
+			setCreateAuctionFailed(true);
+			setSendErrorMessage(result.data.error);
+			// setSendErrorMessage(`Information is missing from your Auction`);
+			return;
+		}
+
+		props.onAuctionDelete(props.auction);
+	}
+
 	return (
 		<ModalUnstyled
 			className="unstyled-modal"
@@ -213,10 +337,20 @@ const ManageAuction = (props: Props) => {
 				<Box sx={p2pModalStyle} className="modal-form">
 
 					<Toaster position='top-center' reverseOrder={false} toastOptions={{ duration: 5000 }} />
-					<header className="is-flex is-flex-align-center is-flex-justify-space-between m-b-md">
+					<div className="is-flex is-flex-align-center is-flex-justify-space-between m-b-md">
 						<h1 className="has-font-tomo">{props.isEditing ? 'Update' : 'Create'} Auction</h1>
-						<img src="/img/icon-close-circle.svg" alt="close modal icon" onClick={handleCloseModal} />
-					</header>
+
+						<div className="is-flex is-flex-align-center is-flex-justify-space-between m-b-md">
+
+							{props.auction && (
+								<IconButton color="error" className="m-r-md" onClick={tryDeleteAuction}>
+									<DeleteIcon />
+								</IconButton>
+							)}
+
+							<img src="/img/icon-close-circle.svg" alt="close modal icon" onClick={handleCloseModal} />
+						</div>
+					</div>
 
 					<form className="form is-fflex is-flex-direction-column is-flex-item is-overflow-hidden" onSubmit={manageAuction}>
 						{createAuctionSuccessful && <div className="is-flex is-flex-align-center"><img src="/img/icon-success.svg" alt="success icon" className="m-r-sm" /> Auction has successfully been created!</div>}
@@ -316,7 +450,7 @@ const ManageAuction = (props: Props) => {
 							</Grid>
 
 							<Grid container columns={24} spacing={2} className="m-b-md">
-					
+
 								<Grid item md={12}>
 
 
@@ -374,6 +508,11 @@ const ManageAuction = (props: Props) => {
 
 						<div className="is-flex is-flex-justify-end">
 
+							{auctionFormValues.title === "test" && (
+								<button className="button is-primary is-xl m-l-sm" onClick={fastCreateExpiringAuction}>
+									[TESTING] Create Expiring Auction
+								</button>
+							)}
 							<button type="button" className="button is-tertiary is-xl" onClick={handleCloseModal}>
 								{createAuctionSuccessful || createAuctionFailed ? 'Close' : 'Cancel and Close'}
 							</button>
@@ -382,6 +521,28 @@ const ManageAuction = (props: Props) => {
 							</button>}
 						</div>
 					</form>
+					<Dialog open={showTryDeleteAuctionAlert} onClose={() => setShowTryDeleteAuctionAlert(false)}>
+						<DialogTitle>Confirm Deletion</DialogTitle>
+						<DialogContent>
+							<DialogContentText>
+								To confirm that you wish you delete this Auction please type the Auction's name in the box below.
+							</DialogContentText>
+							<TextField
+								onChange={(e) => { setConfirmDeleteAuctionName(e.target.value) }}
+								autoFocus
+								margin="dense"
+								id="name"
+								label="Auction Name"
+								type="text"
+								fullWidth
+								variant="standard"
+							/>
+						</DialogContent>
+						<DialogActions>
+							<Button onClick={() => setShowTryDeleteAuctionAlert(false)}>Cancel</Button>
+							<Button color="secondary" disabled={confirmDeleteAuctionName !== props.auction?.title} onClick={deleteAuction}>Delete</Button>
+						</DialogActions>
+					</Dialog>
 				</Box>
 			</Fade>
 		</ModalUnstyled>

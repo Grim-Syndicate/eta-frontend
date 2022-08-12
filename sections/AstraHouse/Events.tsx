@@ -1,16 +1,20 @@
 import AstraHouseEvent from './Event'
 import AstraHousePastEvent from './PastEvent'
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import Utils from "../../utils/Utils";
 import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import { AstraAuction, AstraRaffle } from '../../models/AstraHouse';
+import { GrimsContext } from '../../components/GrimsProvider';
+import ManageRaffle from '../../components/ManageRaffle';
+import ManageAuction from '../../components/ManageAuction';
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
 const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => { 
+  const { canCreateRaffle } = useContext(GrimsContext)
   const { publicKey, wallet, sendTransaction, signTransaction } = useWallet();
 
   const [isLoadingAuctionEvents, setIsLoadingAuctionEvents] = useState(true);
@@ -18,6 +22,43 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
 
   const [isLoadingPastEvents, setIsLoadingPastEvents] = useState(true);
   const [pastEvents, setPastEvents] = useState<Array<AstraRaffle | AstraAuction>>([]);
+  
+  const [isOpenCreateRaffleModal, setOpenCreateRaffleModal] = React.useState<boolean>(false);
+  const [isOpenCreateAuctionModal, setOpenCreateAuctionModal] = React.useState<boolean>(false);
+
+
+  const handleOpenCreateRaffleModal = () => {
+    setOpenCreateRaffleModal(true);
+  }
+  const handleCloseCreateRaffleModal = () => {
+    setOpenCreateRaffleModal(false);
+  }
+
+  const handleOpenCreateAuctionModal = () => {
+    setOpenCreateAuctionModal(true);
+  }
+  const handleCloseCreateAuctionModal = () => {
+    setOpenCreateAuctionModal(false);
+  }
+
+  const handleRaffleCreated = (raffle: AstraRaffle) => {
+    if (!raffle) return;
+    
+    const newEvents = [...astraEvents];
+    newEvents.push(raffle);
+
+    setAstraEvents(newEvents);
+  }
+  
+  const handleAuctionCreated = (auction: AstraAuction) => {
+    if (!auction) return;
+
+    const newEvents = [...astraEvents];
+    newEvents.push(auction);
+
+    setAstraEvents(newEvents);
+
+  }
 
   useEffect(() => {
     async function data() {
@@ -119,12 +160,42 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
 
     } else {
       console.log(`Couldn't find existing raffle with id ${event._id} to update`, event);
+      const newAuctionEvents = [...astraEvents];
+      newAuctionEvents.push(event);
     }
 
+  }
+  const onAuctionDelete = (auction: AstraAuction) => {
+    
+    const newAuctionEvents = astraEvents.filter(a => a._id !== auction._id);
+    setAstraEvents(newAuctionEvents);
   }
 
   return (
     <div>
+      
+      <ManageRaffle
+      isOpen={isOpenCreateRaffleModal}
+      isEditing={false}
+      raffle={undefined}
+      modalClosed={handleCloseCreateRaffleModal}
+      raffleSet={ handleRaffleCreated } />
+      
+      <ManageAuction
+      isOpen={isOpenCreateAuctionModal}
+      isEditing={false}
+      auction={undefined}
+      modalClosed={handleCloseCreateAuctionModal}
+      auctionSet={ handleAuctionCreated } 
+      onAuctionDelete={onAuctionDelete} />
+
+      {canCreateRaffle && (
+        <div className="is-flex is-flex-justify-end  m-b-sm">
+          <button className="button is-primary" onClick={handleOpenCreateRaffleModal}>Create Raffle</button>
+          <button className="button is-primary m-l-sm" onClick={handleOpenCreateAuctionModal}>Create Auction</button>
+        </div>
+      )}
+
       {isLoadingAuctionEvents && <div className="has-font-heading">Loading raffles...</div>}
       {!isLoadingAuctionEvents && astraEvents.length === 0 && <Alert severity="info">There are no raffles at this time.</Alert>}
       
@@ -133,7 +204,7 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
           {astraEvents.map((event: AstraRaffle | AstraAuction) =>
           <Grid item sm={12} md={24} key={event._id}>
             <div className="box-light p-md has-border-radius-md">
-              <AstraHouseEvent event={event} pointsBalance={pointsBalance} updatePointBalance={updateAstraBalance} eventUpdated={handleEventUpdated} />
+              <AstraHouseEvent event={event} pointsBalance={pointsBalance} updatePointBalance={updateAstraBalance} eventUpdated={handleEventUpdated} eventDeleted={onAuctionDelete} />
             </div>
           </Grid>
           )}
