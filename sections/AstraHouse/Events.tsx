@@ -217,7 +217,7 @@ const AstraHouseEvents = React.forwardRef((nftFunctions, ref) => {
           {pastEvents.map((event:AstraRaffle | AstraAuction) =>
           <Grid item sm={12} md={24} key={event._id}>
             <div className="box-light p-md has-border-radius-md">
-              <AstraHousePastEvent event={event} pointsBalance={pointsBalance} updatePointBalance={updateAstraBalance} eventUpdated={handleEventUpdated}  />
+              <AstraHousePastEvent event={event} pointsBalance={pointsBalance} updatePointBalance={updateAstraBalance} eventUpdated={handleEventUpdated} eventDeleted={onAuctionDelete} />
             </div>
           </Grid>
           )}

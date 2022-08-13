@@ -13,6 +13,7 @@ interface Props {
   pointsBalance: number;
   updatePointBalance: (updated: number) => void;
   eventUpdated: (raffle: AstraRaffle | AstraAuction) => void;
+	eventDeleted: (event: AstraAuction) => void;
 }
 const AstraHousePastEvent = (props: Props) => {
   const { canCreateRaffle } = useContext(GrimsContext);
@@ -39,7 +40,7 @@ const AstraHousePastEvent = (props: Props) => {
     
     {props.event?.type === "RAFFLE" && (<AstraHouseEvent_Raffle raffle={props.event as AstraRaffle} pointsBalance={props.pointsBalance} updatePointBalance={props.updatePointBalance} raffleUpdated={props.eventUpdated}/>)}
     
-    {props.event?.type === "AUCTION" && (<AstraHouseEvent_Auction auction={props.event as AstraAuction} pointsBalance={props.pointsBalance} updatePointBalance={props.updatePointBalance} auctionUpdated={props.eventUpdated}/>)}
+    {props.event?.type === "AUCTION" && (<AstraHouseEvent_Auction auction={props.event as AstraAuction} pointsBalance={props.pointsBalance} updatePointBalance={props.updatePointBalance} auctionUpdated={props.eventUpdated} onAuctionDeleted={props.eventDeleted}/>)}
   
 
 
