@@ -332,8 +332,8 @@ const AstraHouseEvent_Auction = (props: Props) => {
 				onAuctionDelete={props.onAuctionDeleted} />
 
 			<Grid columns={24} container spacing={4}>
-				<Grid item xs={24} md={8} lg={6}><img src={props.auction.image} className={`${styles['auction-image']} has-border-radius-lg`} /></Grid>
-				<Grid item xs={24} md={16} lg={18}>
+				<Grid item xs={24} md={hasEnded ? 6 : 8} lg={hasEnded ? 4 : 6}><img src={props.auction.image} className={`${styles['auction-image']} has-border-radius-lg`} /></Grid>
+				<Grid item xs={24} md={hasEnded ? 18 : 16} lg={hasEnded ? 20 : 18}>
 					<Grid columns={24} container justifyContent="space-between" alignItems="center" className={`${styles['auction-detail']}`}>
 						<Grid item>
 							<div className={`${styles['auction-tag']} ${styles['is-auction']} is-uppercase`}>
@@ -363,14 +363,14 @@ const AstraHouseEvent_Auction = (props: Props) => {
 							<Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
 								<Grid item><strong>Current winning wallet</strong></Grid>
 								{(publicKey && (publicKey.toBase58() === currentWinningWallet)) && (<Grid item>You are the highest bid!</Grid>)}
-								{(!publicKey || (publicKey.toBase58() !== currentWinningWallet)) && (<Grid item>{currentWinningWallet}</Grid>)}
+								{(!publicKey || (publicKey.toBase58() !== currentWinningWallet)) && (<Grid item>{currentWinningWallet.slice(0, 4) + '...' + currentWinningWallet.slice(-4)}</Grid>)}
 							</Grid>
 						)}
 						{(currentWinningWallet && hasEnded) && (
 							<Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
 								<Grid item><strong>Winning wallet</strong></Grid>
 								{(publicKey && (publicKey.toBase58() === currentWinningWallet)) && (<Grid item>You won the auction!</Grid>)}
-								{(!publicKey || (publicKey.toBase58() !== currentWinningWallet)) && (<Grid item>{currentWinningWallet}</Grid>)}
+								{(!publicKey || (publicKey.toBase58() !== currentWinningWallet)) && (<Grid item>{currentWinningWallet.slice(0, 4) + '...' + currentWinningWallet.slice(-4)}</Grid>)}
 							</Grid>
 						)}
 

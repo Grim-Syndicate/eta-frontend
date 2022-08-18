@@ -263,8 +263,8 @@ const AstraHouseEvent_Raffle = (props: Props) => {
 
 
     <Grid columns={24} container spacing={4}>
-      <Grid item xs={24} md={8} lg={6}><img src={props.raffle.image} className={`${styles['auction-image']} has-border-radius-lg`} /></Grid>
-      <Grid item xs={24} md={16} lg={18}>
+      <Grid item xs={24} md={hasEnded ? 6 : 8} lg={hasEnded ? 4 : 6}><img src={props.raffle.image} className={`${styles['auction-image']} has-border-radius-lg`} /></Grid>
+      <Grid item xs={24} md={hasEnded ? 18 : 16} lg={hasEnded ? 20 : 18}>
         <Grid columns={24} container justifyContent="space-between" alignItems="center" className={`${styles['auction-detail']}`}>
           <Grid item>
             <div className={`${styles['auction-tag']} ${styles['is-raffle']} is-uppercase`}>
@@ -294,7 +294,8 @@ const AstraHouseEvent_Raffle = (props: Props) => {
         <Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
             <Grid item><strong>Cost per ticket</strong></Grid>
             <Grid item>{props.raffle.ticketPrice} $ASTRA</Grid>
-          </Grid>
+        </Grid>
+        {!hasEnded && (<>
           {props.raffle.maxTickets > 0 && 
           <Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
             <Grid item><strong>Maximum tickets allowed</strong></Grid>
@@ -305,10 +306,18 @@ const AstraHouseEvent_Raffle = (props: Props) => {
             <Grid item><strong>Number of winners</strong></Grid>
             <Grid item>{props.raffle.winnerCount}</Grid>
           </Grid>}
+        </>)}
           <Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
             <Grid item><strong>Total entries</strong></Grid>
             <Grid item>{totalTickets} entries</Grid>
           </Grid>
+          {hasEnded && (<Grid container justifyContent="space-between" className={`${styles['auction-detail']}`}>
+            <Grid item><strong>Winner{props.raffle.winners?.length > 1 ? 's' : ''}</strong></Grid>
+            {props.raffle.winners && 
+              <Grid item>{props.raffle.winners.map(winner => <span>{winner.slice(0, 4) + '...' + winner.slice(-4)}<br /></span>)}</Grid>
+            }
+            {!props.raffle.winners && <Grid item>Pending draw</Grid> }
+          </Grid>)}
           {!hasEnded && (
             <Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
               <Grid item><strong>Time remaining</strong></Grid>
@@ -337,7 +346,7 @@ const AstraHouseEvent_Raffle = (props: Props) => {
                 />
               </div>
             )}
-
+            {!hasEnded && (
             <Grid columns={24} container justifyContent="space-between" className={`${styles['auction-detail']}`}>
               <Grid item>
                 <div className="has-text-natural-bone m-t-sm">
@@ -350,6 +359,7 @@ const AstraHouseEvent_Raffle = (props: Props) => {
                 </div>
               </Grid>
             </Grid>
+            )}
           </div>
           {!hasEnded && (<div className={`${styles['auction-form-button-container']}`}><button type="submit" className="button is-primary is-xl" disabled={isPlacingBid}>Buy Raffle Ticket</button></div>)}
         </form>
