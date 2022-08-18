@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import Grid from '@mui/material/Grid';
@@ -12,6 +12,11 @@ import PublicSection from '../components/PublicSection';
 import Marketplaces from '../components/Marketplaces';
 import AstraHouseEvents from '../sections/AstraHouse/Events';
 import AstraHouseMyRaffles from '../sections/AstraHouse/MyRaffles';
+import { GrimsContext } from "../components/GrimsProvider";
+import { AstraAuction, AstraRaffle } from "../models/AstraHouse";
+import ManageRaffle from "../components/ManageRaffle";
+import ManageAuction from "../components/ManageAuction";
+import HeadElement from '../components/HeadElement';
 
 const tabTheme = createTheme({
   palette: {
@@ -33,15 +38,19 @@ const tabTheme = createTheme({
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
-const AstraHouse = React.forwardRef((nftFunctions, ref) => { 
+const AstraHouse = React.forwardRef((nftFunctions, ref) => {
   const { publicKey, wallet, sendTransaction, signTransaction } = useWallet();
-  const [sectionValue, setSectionValue] = React.useState('events');
+  const [sectionValue, setSectionValue] = React.useState<string>('events');
+  
+
   const handleSectionChange = (event:any, newValue:string) => {
     setSectionValue(newValue);
   };
-
+  
   return wallet ? (
     <>
+      <HeadElement />
+
       <div>
         <div className="title-bar p-md main-content-wrapper">
           <div className="container main-content-wrapper">
@@ -65,6 +74,7 @@ const AstraHouse = React.forwardRef((nftFunctions, ref) => {
               </ThemeProvider>
             </Grid>
           </Grid>
+
 
           {sectionValue == 'events' && <AstraHouseEvents />}
           {sectionValue == 'my_raffles' && <AstraHouseMyRaffles />}
