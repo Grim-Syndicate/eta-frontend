@@ -42,7 +42,7 @@ const Backdrop = styled("div")`
   -webkit-tap-highlight-color: transparent;
 `;
 
-const domainURL = process.env.REACT_APP_DOMAIN || 'http://localhost:5050';
+const domainURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5050';
 
 interface Props {
 	auction: AstraAuction | undefined;
