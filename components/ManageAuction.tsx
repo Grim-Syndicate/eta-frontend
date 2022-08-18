@@ -325,13 +325,12 @@ const ManageAuction = (props: Props) => {
 	}
 
 	return (
-		<ModalUnstyled
+		<Dialog
 			className="unstyled-modal"
 			aria-labelledby="Create Auction"
 			aria-describedby="Create Auction"
 			open={props.isOpen}
 			onClose={handleCloseModal}
-			BackdropComponent={Backdrop}
 		>
 			<Fade in={props.isOpen}>
 				<Box sx={p2pModalStyle} className="modal-form">
@@ -545,7 +544,7 @@ const ManageAuction = (props: Props) => {
 					</Dialog>
 				</Box>
 			</Fade>
-		</ModalUnstyled>
+		</Dialog>
 	)
 };
 

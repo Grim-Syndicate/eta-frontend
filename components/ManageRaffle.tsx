@@ -15,6 +15,7 @@ import { GrimsContext } from "./GrimsProvider";
 import bs58 from "bs58";
 import toast, { Toaster } from 'react-hot-toast'
 import { AstraRaffle } from "../models/AstraHouse";
+import { Dialog } from "@mui/material";
 
 const p2pModalStyle = {
 	display: 'flex',
@@ -200,13 +201,12 @@ const ManageRaffle = (props: Props) => {
 		props.modalClosed()
 	}
 	return (
-		<ModalUnstyled
+		<Dialog
 			className="unstyled-modal"
 			aria-labelledby="Create Raffle"
 			aria-describedby="Create Raffle"
 			open={props.isOpen}
 			onClose={handleCloseModal}
-			BackdropComponent={Backdrop}
 		>
 			<Fade in={props.isOpen}>
 				<Box sx={p2pModalStyle} className="modal-form">
@@ -400,7 +400,7 @@ const ManageRaffle = (props: Props) => {
 					</form>
 				</Box>
 			</Fade>
-		</ModalUnstyled>
+		</Dialog>
 	)
 };
 

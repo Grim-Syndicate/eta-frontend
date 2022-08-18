@@ -9,6 +9,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import toast, { Toaster } from 'react-hot-toast'
 import { AstraRaffle } from "../models/AstraHouse";
 import { GrimsContext } from "./GrimsProvider";
+import { Dialog } from "@mui/material";
 
 const p2pModalStyle = {
 	display: 'flex',
@@ -95,13 +96,12 @@ const GetRaffleWinners = (props: Props) => {
 
 	}
 	return (
-		<ModalUnstyled
+		<Dialog
 			className="unstyled-modal"
 			aria-labelledby="Finish Raffle"
 			aria-describedby="Finish Raffle"
 			open={props.isOpen}
 			onClose={handleCloseModal}
-			BackdropComponent={Backdrop}
 		>
 			<Fade in={props.isOpen}>
 				<Box sx={p2pModalStyle} className="modal-form">
@@ -134,7 +134,7 @@ const GetRaffleWinners = (props: Props) => {
 					</div>
 				</Box>
 			</Fade>
-		</ModalUnstyled>
+		</Dialog>
 	)
 };
 

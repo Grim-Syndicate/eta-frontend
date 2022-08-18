@@ -29,6 +29,7 @@ import HeadElement from '../components/HeadElement';
 import WalletUtils from '../utils/WalletUtils';
 import Nightshift from "../components/Nightshift";
 import Utils from "../utils/Utils";
+import { Dialog } from '@mui/material';
 
 const tabTheme = createTheme({
   palette: {
@@ -938,13 +939,12 @@ const Home: NextPage = () => {
             }
           </Grid>
         </main>
-        <ModalUnstyled
+        <Dialog
           className="unstyled-modal"
           aria-labelledby="Send $ASTRA"
           aria-describedby="Send $ASTRA"
           open={isOpenSendAstraModal}
           onClose={handleCloseSendAstraModal}
-          BackdropComponent={Backdrop}
         >
           <Fade in={isOpenSendAstraModal}>
             <Box sx={p2pModalStyle} className="modal-form">
@@ -955,14 +955,13 @@ const Home: NextPage = () => {
               <SendAstraForm handleCloseSendAstraModal={handleCloseSendAstraModal} updateAstraBalance={updateAstraBalance} connection={connection} isUsingLedger={isUsingLedger} publicKey={publicKey} signMessage={signMessage} signTransaction={signTransaction} pointsBalance={pointsBalance} />
             </Box>
           </Fade>
-        </ModalUnstyled>
-        <ModalUnstyled
+        </Dialog>
+        <Dialog
           className="unstyled-modal"
           aria-labelledby="Are you sure?"
           aria-describedby="Are you sure?"
           open={isOpenConfirmClockOutModal || isOpenConfirmClockOutAllModal}
           onClose={handleCloseConfirmClockOutModal}
-          BackdropComponent={Backdrop}
         >
           <Fade in={isOpenConfirmClockOutModal || isOpenConfirmClockOutAllModal}>
             <Box sx={p2pModalStyle} className="modal-form">
@@ -991,7 +990,7 @@ const Home: NextPage = () => {
 
             </Box>
           </Fade>
-        </ModalUnstyled>
+        </Dialog>
       </div>
     </>
   ) : (
