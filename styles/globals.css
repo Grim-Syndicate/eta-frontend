@@ -1620,6 +1620,10 @@ input + .input-helper-text {
   color: white;
 }
 
+.MuiFormControlLabel-root:hover .MuiCheckbox-root{
+  color: var(--color-primary);
+}
+
 /* Darkmode */
 .nightshift-control .MuiInputLabel-formControl {
   color: white;
@@ -1683,6 +1687,10 @@ input + .input-helper-text {
 }
 
 .dark-mode .MuiCheckbox-root.Mui-checked {
+  color: var(--color-primary) !important;
+}
+
+.dark-mode .MuiFormControlLabel-root:hover .MuiCheckbox-root{
   color: var(--color-primary) !important;
 }
 
