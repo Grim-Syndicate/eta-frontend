@@ -119,7 +119,7 @@ const Proposals = React.forwardRef((nftFunctions, ref) => {
       {proposals.length > 0 && (
         <Grid columns={24} container spacing={2} className="m-b-md">
           {proposals.map((proposal: Proposal) =>
-          <Grid item sm={12} md={24} key={proposal._id}>
+          <Grid item sm={24} md={24} key={proposal._id}>
             <div className="box-light p-md has-border-radius-md">
               <ProposalUI proposal={proposal} voteWeight={0} proposalUpdated={handleProposalUpdated} proposalDeleted={onProposalDelete} />
             </div>

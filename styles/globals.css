@@ -635,6 +635,10 @@ hr {
   cursor: default;
 }
 
+.button.is-inline {
+  display: inline-flex;
+}
+
 .wallet-adapter-button-custom {
   display: inline-flex !important;
 }
@@ -1612,6 +1616,10 @@ input + .input-helper-text {
   background-color: var(--color-natural-bone-light);
 }
 
+.nightshift-control {
+  color: white;
+}
+
 /* Darkmode */
 .nightshift-control .MuiInputLabel-formControl {
   color: white;
@@ -1669,3 +1677,12 @@ input + .input-helper-text {
 .dark-mode .MuiTableCell-body:first-of-type {
   color: white !important;
 }
+
+.dark-mode .MuiCheckbox-root {
+  color: white !important;
+}
+
+.dark-mode .MuiCheckbox-root.Mui-checked {
+  color: var(--color-primary) !important;
+}
+

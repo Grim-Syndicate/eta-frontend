@@ -344,7 +344,7 @@ const ProposalUI = (props: Props) => {
         <div className={`${styles['proposal-detail-container']}`}>
           {props.proposal.description && 
             <div className={`${styles['proposal-description']}`}><ReactMarkdown children={props.proposal.description} linkTarget='_blank' components={{ 
-              a: ({node, ...props}) => <a {...props} className='button is-outlined' />
+              a: ({node, ...props}) => <a {...props} className='button is-outlined is-small is-inline' style={{minWidth:'200px'}} />
             }} /></div>
           }
 
