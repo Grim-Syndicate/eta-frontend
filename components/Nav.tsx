@@ -53,7 +53,7 @@ return (
         <li><Link href="/office"><a className="navbar-nav-item">Office</a></Link></li>
         <li><Link href="/field-work"><a className="navbar-nav-item">Field Work</a></Link></li>
         <li><Link href="/astra-house"><a className="navbar-nav-item">Astra House</a></Link></li>
-        <li><Link href="/"><a className="navbar-nav-item navbar-nav-item--inactive">Locker</a></Link></li>
+        <li><Link href="/ballot-box"><a className="navbar-nav-item">Ballot Box</a></Link></li>
         <li className='m-t-lg'>
             <WalletMultiButton className="wallet-adapter-button-custom m-b-sm" />
             <div>
@@ -78,7 +78,7 @@ return (
             <Link href="/office"><a className="navbar-nav-item">Office</a></Link>
             <Link href="/field-work"><a className="navbar-nav-item">Field Work</a></Link>
             <Link href="/astra-house"><a className="navbar-nav-item">Astra House</a></Link>
-            <Link href="/"><a className="navbar-nav-item navbar-nav-item--inactive">Locker</a></Link>
+            <Link href="/ballot-box"><a className="navbar-nav-item">Ballot Box</a></Link>
         </div>
 
         <div className="is-flex is-flex-align-center">

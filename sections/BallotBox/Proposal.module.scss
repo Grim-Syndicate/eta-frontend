@@ -1,0 +1,114 @@
+.proposal-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--font-family-body);
+  font-size: .75rem;
+}
+
+.proposal-tag img {
+  width: 24px;
+  height: 24px;
+  margin-right: .5rem;
+}
+
+.proposal-tag.is-raffle {
+  background-color: #e7def4;
+  color: rgba(103, 51, 184, 1);
+}
+.proposal-tag.is-not-enabled {
+  background-color: rgba(255, 51, 0, 1);
+  color: rgba(50, 30, 0, 1);
+  margin-left: 10px;
+}
+.proposal-tag.is-auction {
+  background-color: #DFEFE2;
+  color: #29913E;
+}
+.proposal-image {
+  width: 100%;
+}
+
+.proposal-title {
+  font-size: 1.5rem;
+  margin: .375rem 0 0;
+}
+
+.proposal-subtitle {
+  margin: 1rem 0 0.375rem;}
+
+.proposal-select-all {
+  margin: 0 0 0.375rem;
+  color: var(--color-primary);
+  display: inline-block;
+
+  &:hover{
+    color: var(--color-primary-dark);
+  }
+}
+
+.proposal-by {
+  font-size: 0.8rem;
+  margin: 0 0 .375rem;
+}
+
+.proposal-by a {
+  color: var(--color-primary);
+}
+
+.proposal-by a:hover {
+  color: var(--color-primary-dark);
+}
+
+.proposal-detail-container {
+  margin: 1rem 0;
+}
+
+.proposal-description {
+  margin: 1rem 0;
+}
+
+.proposal-detail {
+  padding: .25rem 0;
+  font-size: .875rem;
+  color: var(--color-natural-grey);
+}
+
+.proposal-form {
+  margin-bottom: .25rem;
+}
+
+.proposal-form-button-container {
+  margin-top: 1rem;
+}
+
+.proposal-form-button-container .button {
+  width: 100%;
+}
+
+.dark-mode {
+  .proposal-detail {
+    color: white;
+  }
+}
+
+@media all and (min-width: 900px) {
+  .proposal-form {
+    display: flex;
+  }
+
+  .proposal-form-input-container {
+    flex: 1;
+    margin-right: 1rem;
+  }
+  
+  .proposal-form-button-container {
+    margin-top: 4px;
+    flex: none
+  }
+
+  .proposal-form-button-container .button {
+    width: 240px;
+  }
+}

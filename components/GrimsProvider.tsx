@@ -19,9 +19,11 @@ function GrimsProvider({ children }:any) {
   const [isLoadingGrims, setIsLoadingGrims] = useState(false);
   const [stakedGrims, setStakedGrims] = useState<any[]>([]);
   const [grimsReady, setGrimsReady] = useState<any[]>([]);
+  const [grimCount, setGrimCount] = useState<number>();
 
   const [userRoles, setUserRoles] = useState<Array<string>>([]);
   const canCreateRaffle = userRoles && userRoles.includes("RAFFLE_CREATOR");
+  const canCreateProposal = userRoles && userRoles.includes("PROPOSAL_CREATOR");
 
   const loadRoles = async() => {
     if (!publicKey) return;
@@ -68,6 +70,7 @@ function GrimsProvider({ children }:any) {
 
     if (publicKey) {
       let allGrims:{[key:string]: any} = {};
+      let grimsInWallet = 0
 
       try {
         let result = await axios.get(getStakedURL + "?wallet=" + publicKey);
@@ -97,6 +100,7 @@ function GrimsProvider({ children }:any) {
             unclaimed += parseFloat(stakedResults[i].pointsUnclaimed);
             allGrims[i] = stakedResults[i];
             staked.push(allGrims[i]);
+            grimsInWallet += 1
           }
 
           setStakedGrims(staked.sort((a, b) => {
@@ -118,6 +122,7 @@ function GrimsProvider({ children }:any) {
             unclaimed += parseFloat(unstakedResults[i].pointsUnclaimed);
             allGrims[i] = unstakedResults[i];
             notStaked.push(allGrims[i]);
+            grimsInWallet += 1
           }
 
           //handleInitialTabSelection(stakedResults, unstakedResults)
@@ -130,6 +135,7 @@ function GrimsProvider({ children }:any) {
             benchedResults[i].benched = true;
             allGrims[i] = benchedResults[i];
             notStaked.push(allGrims[i]);
+            grimsInWallet += 1
           }
 
           let hiddenResults = result.data.wallet.hidden;
@@ -143,6 +149,7 @@ function GrimsProvider({ children }:any) {
           }
 
           setGrims(allGrims);
+          setGrimCount(grimsInWallet)
 
           //setIsClockingIn(clockingIn);
           //setIsClockingOut(clockingOut);
@@ -162,7 +169,7 @@ function GrimsProvider({ children }:any) {
   }
 
   return (
-    <GrimsContext.Provider value={{grims, setGrims, daemons, setDaemons, grimsReady, setGrimsReady, loadGrims, isLoadingGrims, isUsingLedger, setIsUsingLedger, canCreateRaffle}}>
+    <GrimsContext.Provider value={{grims, setGrims, daemons, setDaemons, grimsReady, setGrimsReady, loadGrims, isLoadingGrims, isUsingLedger, setIsUsingLedger, canCreateRaffle, canCreateProposal, grimCount}}>
       {children}
     </GrimsContext.Provider>
   );
