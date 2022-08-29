@@ -178,7 +178,6 @@ function GrimsProvider({ children }:any) {
             benchedResults[i].benched = true;
             allGrims[i] = benchedResults[i];
             notStaked.push(allGrims[i]);
-            grimsInWallet += 1
           }
 
           let hiddenResults = result.data.wallet.hidden;
@@ -271,6 +270,7 @@ function GrimsProvider({ children }:any) {
       hasOnlyUnstakedGrimsInWallet,
       isClockingIn,
       isClockingOut,
+      stakedGrims,
       notStakedGrims,
       hiddenGrims,
       pointsLocked,

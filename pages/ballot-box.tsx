@@ -37,10 +37,8 @@ const tabTheme = createTheme({
   }
 });
 
-const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
-
 const BallotBox = React.forwardRef((nftFunctions, ref) => {
-  const { publicKey, wallet, sendTransaction, signTransaction } = useWallet();
+  const { wallet } = useWallet();
   const [sectionValue, setSectionValue] = React.useState<string>('proposals');
   
 

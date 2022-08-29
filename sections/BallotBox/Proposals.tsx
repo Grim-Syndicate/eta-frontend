@@ -14,7 +14,8 @@ const Proposals = React.forwardRef((nftFunctions, ref) => {
   const { canCreateProposal, grims } = useContext(GrimsContext)
   const { publicKey, wallet, sendTransaction, signTransaction } = useWallet();
 
-  const [isLoadingProposals, setIsLoadingProposals] = useState(true);
+  const [isLoadingProposals, setIsLoadingProposals] = useState(false);
+  const [proposalsLoaded, setProposalsLoaded] = useState(false);
   const [proposals, setProposals] = useState<Array<Proposal>>([]);
   
   const [isOpenCreateProposalModal, setOpenCreateProposalModal] = React.useState<boolean>(false);
@@ -36,6 +37,8 @@ const Proposals = React.forwardRef((nftFunctions, ref) => {
   }
 
   useEffect(() => {
+    if(isLoadingProposals || proposalsLoaded) return
+
     async function data() {
       await Promise.all([loadProposals()])
     }
@@ -63,6 +66,7 @@ const Proposals = React.forwardRef((nftFunctions, ref) => {
 
       if (result?.data?.success && result?.data?.proposals) {
         setProposals(result.data.proposals);
+        setProposalsLoaded(true)
       }
     } catch (error) {
       console.error('Error:', error)
@@ -121,7 +125,7 @@ const Proposals = React.forwardRef((nftFunctions, ref) => {
           {proposals.map((proposal: Proposal) =>
           <Grid item sm={24} md={24} key={proposal._id}>
             <div className="box-light p-md has-border-radius-md">
-              <ProposalUI proposal={proposal} voteWeight={0} proposalUpdated={handleProposalUpdated} proposalDeleted={onProposalDelete} />
+              <ProposalUI key={proposal._id} proposal={proposal} voteWeight={0} proposalUpdated={handleProposalUpdated} proposalDeleted={onProposalDelete} />
             </div>
           </Grid>
           )}

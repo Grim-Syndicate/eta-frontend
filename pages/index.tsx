@@ -73,6 +73,7 @@ const Home: NextPage = () => {
     hasOnlyUnstakedGrimsInWallet,
     isClockingIn, 
     isClockingOut,
+    stakedGrims,
     notStakedGrims,
     hiddenGrims,
     pointsLocked,
@@ -86,7 +87,6 @@ const Home: NextPage = () => {
   const [isClaimingAstra, setIsClaimingAstra] = useState(false);
   const [isClockingOutAll, setIsClockingOutAll] = useState(false);
   const [isClockingInAll, setIsClockingInAll] = useState(false);
-  const [stakedGrims, setStakedGrims] = useState<any[]>([]);
   const [points, setPoints] = useState<any[]>([]);
   const [pointsPerDay, setPointsPerDay] = useState(0);
 
@@ -634,7 +634,7 @@ const Home: NextPage = () => {
                 <Grid columns={24} container spacing={3}>
                   {stakedGrims &&
                     stakedGrims.length > 0 &&
-                    stakedGrims.map((val) => {
+                    stakedGrims.map((val:any) => {
                       return (
                         <Grid item xs={24} sm={12} md={8} lg={6} key={val.mint} className="grim-card-container m-b-md">
                           <div className="grim-card">

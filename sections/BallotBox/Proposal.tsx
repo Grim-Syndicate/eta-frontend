@@ -14,7 +14,7 @@ import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import styles from './Proposal.module.scss'
 import { Proposal, ProposalVote } from '../../models/Proposal';
 import ManageProposal from '../../components/ManageProposal';
-import { Box, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { Box, Checkbox, CircularProgress, FormControlLabel, FormGroup } from '@mui/material';
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -35,9 +35,12 @@ const ProposalUI = (props: Props) => {
   const [hasEnded, setHasEnded] = useState<boolean>(false);
   const [lastVotedOn, setLastVotedOn] = useState<Date>();
   const [previousVotes, setPreviousVotes] = useState<{[key:string]:boolean}>();
+  const [gettingVotes, setGettingVotes] = useState<boolean>(false);
+  const [votesLoaded, setVotesLoaded] = useState<boolean>(false);
 
   const getWalletVotes = async (proposalID:string) => {
     if(!publicKey) return
+    setGettingVotes(true)
     const walletVotesURL = `${domainURL}/ballot-box/wallet-votes?wallet=${publicKey.toString()}&proposalID=${proposalID}`
     const result = await axios.get(walletVotesURL);
     if(result.data){
@@ -45,10 +48,13 @@ const ProposalUI = (props: Props) => {
         setLastVotedOn(new Date(result.data.votedOn))
       }
       setPreviousVotes(result.data.votes)
+      setVotesLoaded(true)
     }
+    setGettingVotes(false)
   } 
 
   useEffect(() => {
+    if(gettingVotes || votesLoaded) return
     if (props.proposal) {
       const date = new Date();
       const now = Math.floor(date.getTime());
@@ -56,7 +62,7 @@ const ProposalUI = (props: Props) => {
       setHasEnded(now > props.proposal.enabledTo);
       getWalletVotes(props.proposal._id);
     }
-  }, [props]);
+  }, [props?.proposal]);
 
   const getDuration = () => {
     const duration = intervalToDuration({
@@ -241,13 +247,13 @@ const ProposalUI = (props: Props) => {
     }
   }, [props?.proposal, previousVotes])
 
-  const handleSelectAll = () => {
+  const handleSelectAll = (inSupport:boolean) => {
     let votes = []
     for(let option of props.proposal.options){
       let vote:ProposalVote = {
         proposalOptionID: option._id,
         name: option.name,
-        inSupport: true
+        inSupport: inSupport
       }
       if(option.subOptions){
         let subVotes = []
@@ -255,7 +261,7 @@ const ProposalUI = (props: Props) => {
           let subVote:ProposalVote = {
             proposalOptionID: subOption._id,
             name: subOption.name,
-            inSupport: true
+            inSupport: inSupport
           }
           subVotes.push(subVote)
         }
@@ -284,9 +290,18 @@ const ProposalUI = (props: Props) => {
           let subVote:ProposalVote = {
             proposalOptionID: subOption.proposalOptionID,
             name: subOption.name,
-            inSupport:  j == indexSubOption ? event.target.checked : subOption.inSupport
+            inSupport: j == indexSubOption ? event.target.checked : subOption.inSupport
+          }
+          //Parent option checked, so make the child the same
+          if(i == indexOption && indexSubOption == undefined){
+            subVote.inSupport = event.target.checked
           }
           subVotes.push(subVote)
+
+          //If child is selected, make sure parent is as well
+          if(indexSubOption != undefined && event.target.checked){
+            vote.inSupport = true
+          }
         }
         vote.subOptions = subVotes
       }
@@ -348,9 +363,11 @@ const ProposalUI = (props: Props) => {
             }} /></div>
           }
 
+          {gettingVotes && <CircularProgress color="inherit" className="m-r-sm" /> }
+
           {props.proposal.options && checked && (<>
             <h4 className={`${styles['proposal-subtitle']}`}>Select the sections of the proposal that you support</h4>
-            <a className={`${styles['proposal-select-all']}`} href='javascript:void(0)' onClick={handleSelectAll}>Select all</a>
+            <a className={`${styles['proposal-select-all']}`} onClick={() => handleSelectAll(true)}>Select all</a> / <a className={`${styles['proposal-select-all']}`} onClick={() => handleSelectAll(false)}>none</a>
             <FormGroup>
             {props.proposal.options.map((option, index) => {
               let children = <></>
@@ -384,7 +401,7 @@ const ProposalUI = (props: Props) => {
           <div className={`${styles['proposal-form-input-container']}`}>
             {!hasEnded && (
             <Grid columns={24} container alignItems='center' justifyContent="space-between" className={`${styles['proposal-detail']}`}>
-              <Grid xs={12} columns={24} container alignItems='center' >
+              <Grid item xs={12} columns={24} container alignItems='center' >
                 <Grid item>
                 <div className="has-text-natural-bone m-t-sm">
                   <button type="submit" className="button is-primary is-xl" disabled={isVoting || !grimCount || grimCount < 1}>{ lastVotedOn ? 'Re-submit Vote' : 'Submit Vote'}</button>
