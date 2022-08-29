@@ -42,7 +42,7 @@ const QuestGrimCell = ({ metadata, selected = false, onClick = null, quest = nul
         <Grid item xs={8} className="grim-card-container m-b-md">
         <div className={`grim-card ${ selected ? 'selected' : ''}`} onClick={onClick}>
             <div className="grim-card-image-container">
-              <img className="grim-card-image" src={"https://hkgwtdvfyh.medianetwork.cloud/unsafe/300x300/filters:format(webp)/" + metadata.image} alt={metadata.name} />
+              <img className="grim-card-image" src={metadata.image} alt={metadata.name} />
             </div>
             { renderTitle() }
             { renderSubtitle() }

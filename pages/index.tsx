@@ -639,7 +639,7 @@ const Home: NextPage = () => {
                         <Grid item xs={24} sm={12} md={8} lg={6} key={val.mint} className="grim-card-container m-b-md">
                           <div className="grim-card">
                             <div className="has-text-centered">
-                                <img className="grim-card-image" src={"https://hkgwtdvfyh.medianetwork.cloud/unsafe/300x300/filters:format(webp)/" + val.metadata.image} alt={val.metadata.name} />
+                                <img className="grim-card-image" src={val.metadata.image} alt={val.metadata.name} />
                             </div>
                             <div className="grim-description">
                               <Grid columns={24} container spacing={2}>
@@ -705,7 +705,7 @@ const Home: NextPage = () => {
                       <Grid item xs={24} sm={12} md={8} lg={6} key={val.mint} className="grim-card-container m-b-md">
                         <div className="grim-card">
                           <div className="has-text-centered">
-                              <img className="grim-card-image" src={"https://hkgwtdvfyh.medianetwork.cloud/unsafe/600x600/filters:format(webp)/" + val.metadata.image} alt={val.metadata.name} />
+                              <img className="grim-card-image" src={val.metadata.image} alt={val.metadata.name} />
                           </div>
                           <div className="grim-description">
                             <Grid columns={24} container spacing={2}>
@@ -744,7 +744,7 @@ const Home: NextPage = () => {
                         <Grid item xs={24} sm={12} md={8} lg={6} key={val.mint} className="grim-card-container m-b-md">
                           <div className="grim-card">
                             <div className="has-text-centered">
-                                <img className="grim-card-image" src={"https://hkgwtdvfyh.medianetwork.cloud/unsafe/300x300/filters:format(webp)/" + val.metadata.image} alt={val.metadata.name} />
+                                <img className="grim-card-image" src={val.metadata.image} alt={val.metadata.name} />
                             </div>
                             <div className="grim-description">
                               <Grid columns={24} container spacing={2}>

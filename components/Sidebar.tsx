@@ -6,7 +6,7 @@ const Sidebar = React.forwardRef((nftFunctions, ref) => {
       <div className="box-light p-md has-border-radius-md">
         <Grid columns={24} container rowSpacing={2} spacing={4}>
           <Grid item xs={14} sm={8} md={6} lg={14}>
-            <img src="https://hkgwtdvfyh.medianetwork.cloud/unsafe/600x600/filters:format(webp)/https://www.arweave.net/XsU_DGOhJuvLTJuWkPSxBKz1QgHPm6N1Lhq3AcGE0AY?ext=png" alt="Grim of the Month" className="img-fluid has-border-radius-round" />
+            <img src="https://www.arweave.net/XsU_DGOhJuvLTJuWkPSxBKz1QgHPm6N1Lhq3AcGE0AY?ext=png" alt="Grim of the Month" className="img-fluid has-border-radius-round" />
           </Grid>
           <Grid item xs={24} sm={16} md={18} lg={24}>
             <div>April</div>
