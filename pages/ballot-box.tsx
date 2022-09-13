@@ -74,10 +74,13 @@ const BallotBox = React.forwardRef((nftFunctions, ref) => {
       </div>
     </>
   ) : (
+    <>
+    <HeadElement />
      <div className="container main-content-wrapper">
       <div className="m-t-md"><PublicSection /></div>
       <Marketplaces />
     </div>
+    </>
   );
 });
 
