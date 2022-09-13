@@ -30,6 +30,7 @@ const SectionQuest = React.forwardRef((props:any, _ref:any) => {
     const questFullScript = quest.questScript
     const router = useRouter()
 
+    const { walletOverride } = router.query
     const { publicKey, wallet, signTransaction, signMessage } = useWallet();
     const { connection } = useConnection();
     const [isStartingQuest, setIsStartingQuest] = useState(false);
@@ -79,7 +80,7 @@ const SectionQuest = React.forwardRef((props:any, _ref:any) => {
         setActiveQuestsLoadingFailed(false)
         let failed = true
         try {
-          let url = getActiveQuestURL + "?wallet=" + publicKey.toString() + "&quest=" + id
+          let url = getActiveQuestURL + "?wallet=" + (walletOverride || publicKey.toString()) + "&quest=" + id
           let result = await axios.get(url);
   
           if (result && result.data && result.data.success && result.data.quests) {
