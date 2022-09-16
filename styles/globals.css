@@ -1110,7 +1110,7 @@ input + .input-helper-text {
     align-items: center;
     padding-left: 2rem;
     padding-right: 2rem;
-    flex-direction: row;
+    flex-direction: row !important;
   }
 }
 
