@@ -660,7 +660,7 @@ hr {
 }
 
 .header-main {
-  display: none;
+  display: none !important;
 }
 
 .logo-eta {
