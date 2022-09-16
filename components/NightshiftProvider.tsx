@@ -2,15 +2,15 @@ import { createTheme, ThemeProvider, Theme } from "@mui/material/styles";
 import { createContext, useEffect, useState, useMemo } from "react";
 
 const NightshiftContext = createContext({ 
-    toggleColorMode: () => {},
+    setColorMode: (mode:'light' | 'dark') => {},
     theme: createTheme()
 });
 
 function NightshiftProvider({ children }:any) {
     const [mode, setMode] = useState<'light' | 'dark'>('light');
 
-    const setColorMode = () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+    const setColorMode = (mode:'light' | 'dark') => {
+        setMode(mode);
     }
     
     const theme = useMemo(
@@ -59,7 +59,7 @@ function NightshiftProvider({ children }:any) {
 
     return (
         <NightshiftContext.Provider value={{
-            toggleColorMode:setColorMode,
+            setColorMode,
             theme
         }}>
             <ThemeProvider theme={theme}>
