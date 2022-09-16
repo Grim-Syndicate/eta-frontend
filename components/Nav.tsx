@@ -59,8 +59,7 @@ return (
         </li>
     </ul>}
 
-    <AppBar position='static' >
-        <Toolbar disableGutters className='header-main'>
+    <AppBar position='static' className='header-main'>
         <div className='is-text-centered'>
             <img src={ theme.palette.mode == 'light' ? "/img/logo_eta.svg" : "/img/logo_eta_white.svg"} alt="ETA logo" className="logo-eta img-fluid" />
         </div>
@@ -83,7 +82,6 @@ return (
             label="Use Ledger" />
             <WalletMultiButton className="wallet-adapter-button-custom m-l-md" />
         </div>
-        </Toolbar>
     </AppBar>
     </>
 )}
