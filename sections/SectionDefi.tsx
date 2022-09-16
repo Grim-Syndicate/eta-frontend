@@ -1,40 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Grid from '@mui/material/Grid';
 import Divider from '@mui/material/Divider';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Link from '@mui/material/Link';
 
 import axios from "axios";
-import { TextField, InputAdornment, FormControl, InputLabel, OutlinedInput } from "@mui/material";
+import { InputAdornment, FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { Marinade, MarinadeState, MarinadeReferralPartnerState, MarinadeConfig, web3, MarinadeUtils } from '@marinade.finance/marinade-ts-sdk'
-import { WalletError } from '@solana/wallet-adapter-base'
 import toast, { Toaster } from 'react-hot-toast'
 import { PublicKey } from "@solana/web3.js";
 import { BN } from "bn.js";
-
-const tabTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#d63a3a'
-    },
-    secondary: {
-      main: '#111'
-    }
-  },
-  typography: {
-    fontFamily: `"Nunito", "Helvetica", "Arial", sans-serif`,
-    fontSize: 16,
-    button: {
-      textTransform: 'none',
-    }
-  }
-});
-
 
 const SectionDefi = React.forwardRef(() => { 
   const { connection } = useConnection()
@@ -288,14 +267,12 @@ const SectionDefi = React.forwardRef(() => {
           <div className="box-light p-md has-border-radius-md">
             <Grid columns={24} container className="data-items-wrapper" direction={'column'}>
               <Grid item>
-                <ThemeProvider theme={tabTheme}>
                   <Box className="m-b-md">
                   <Tabs value={tabValue} onChange={handleTabChange} aria-label="DeFi options" textColor="secondary" indicatorColor="primary">
                     <Tab value="stake" label={`Stake`} />
                     <Tab value="unstake" label={`Unstake`} />
                   </Tabs>
                   </Box>
-                </ThemeProvider>
               </Grid>
 
               {tabValue == 'stake' && 

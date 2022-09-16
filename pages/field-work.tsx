@@ -4,29 +4,10 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import PublicSection from '../components/PublicSection';
 import Marketplaces from '../components/Marketplaces';
 import SectionAvailableQuests from "../sections/SectionAvailableQuests";
 import Nightshift from "../components/Nightshift";
-
-const tabTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#d63a3a'
-    },
-    secondary: {
-      main: '#111'
-    }
-  },
-  typography: {
-    fontFamily: `"Nunito", "Helvetica", "Arial", sans-serif`,
-    fontSize: 16,
-    button: {
-      textTransform: 'none',
-    }
-  }
-});
 
 const FieldWork = React.forwardRef((nftFunctions, ref) => { 
     const { wallet } = useWallet();
@@ -48,13 +29,11 @@ const FieldWork = React.forwardRef((nftFunctions, ref) => {
           <main className="container main-content-wrapper main-wrapper is-reverse m-t-md">
             <Grid container direction={'column'}>
               <Grid item>
-                <ThemeProvider theme={tabTheme}>
                   <Box className="m-b-md">
                   <Tabs value={sectionValue} onChange={handleSectionChange} aria-label="Grim sections" textColor="secondary" indicatorColor="primary">
                     <Tab value="available" label={`Available Assignments`} />
                   </Tabs>
                   </Box>
-                </ThemeProvider>
               </Grid>
 
               {sectionValue == 'available' && <SectionAvailableQuests/>}

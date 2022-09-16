@@ -664,7 +664,7 @@ hr {
 }
 
 .logo-eta {
-  max-width: 80px;
+  width: 80px;
 }
 
 .position-relative {
@@ -716,6 +716,10 @@ hr {
   padding-top: 2rem;
   background-color: white;
   list-style: none;
+}
+
+.mobile-menu.dark {
+  background-color: black;
 }
 
 .mobile-menu li {

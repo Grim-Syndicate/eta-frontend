@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
 import FormSwitch from '@mui/material/Switch';
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { createContext, useContext } from 'react';
+import { NightshiftContext } from "./NightshiftProvider";
 
 const Nightshift = React.forwardRef(() => { 
     const [isDarkModeEnabled, setChecked] = React.useState(false)
-    
+    const colorMode = useContext(NightshiftContext);
+
     const setTheme = (event:any) => {
         const val = event.target.checked
         setChecked(val);
@@ -19,6 +22,7 @@ const Nightshift = React.forwardRef(() => {
     }
 
     const setBodyClass = (isDarkMode:boolean) => {
+      colorMode.toggleColorMode()
       const body = document.querySelector('body')
       
       if(!body) return

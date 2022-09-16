@@ -1,19 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Grid from '@mui/material/Grid';
-import Divider from '@mui/material/Divider';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-
 import axios from "axios";
-import { TextField, InputAdornment, FormControl, InputLabel, OutlinedInput, CircularProgress } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { Marinade, MarinadeConfig, web3, MarinadeUtils } from '@marinade.finance/marinade-ts-sdk'
-import { WalletError } from '@solana/wallet-adapter-base'
-import toast, { Toaster } from 'react-hot-toast'
-import { PublicKey } from "@solana/web3.js";
+import { CircularProgress } from "@mui/material";
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 

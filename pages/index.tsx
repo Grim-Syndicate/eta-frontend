@@ -12,7 +12,6 @@ import Tab from '@mui/material/Tab';
 import Fade from "@mui/material/Fade";
 import Divider from '@mui/material/Divider';
 import { styled } from "@mui/system";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import SendAstraForm from '../components/SendAstraForm';
@@ -25,24 +24,6 @@ import WalletUtils from '../utils/WalletUtils';
 import Nightshift from "../components/Nightshift";
 import Utils from "../utils/Utils";
 import { Dialog } from '@mui/material';
-
-const tabTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#d63a3a'
-    },
-    secondary: {
-      main: '#111'
-    }
-  },
-  typography: {
-    fontFamily: `"Nunito", "Helvetica", "Arial", sans-serif`,
-    fontSize: 16,
-    button: {
-      textTransform: 'none',
-    }
-  }
-});
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -509,14 +490,12 @@ const Home: NextPage = () => {
         <main className="container main-content-wrapper main-wrapper is-reverse m-t-md">
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
-              <ThemeProvider theme={tabTheme}>
                 <Box className="m-b-md">
                 <Tabs value={sectionValue} onChange={handleSectionChange} aria-label="Grim sections" textColor="secondary" indicatorColor="primary">
                   <Tab value="staking" label={`Grim Staking`} />
                   <Tab value="defi" label={`Grim DeFi`} />
                 </Tabs>
                 </Box>
-              </ThemeProvider>
             </Grid>
 
             {sectionValue == 'staking' && 
@@ -594,7 +573,6 @@ const Home: NextPage = () => {
             {!isLoadingGrims && 
             <Grid container justifyContent="space-between" alignItems="center">
               <Grid item>
-                <ThemeProvider theme={tabTheme}>
                   <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={tabValue} onChange={handleTabChange} aria-label="Grim tabs" textColor="secondary" indicatorColor="primary">
                       <Tab value="clockedIn" label={`Clocked in (${stakedGrims.length})`} />
@@ -602,7 +580,6 @@ const Home: NextPage = () => {
                       <Tab value="daemons" label={`Daemons (${Object.keys(daemons).length})`} />
                     </Tabs>
                   </Box>
-                </ThemeProvider>
               </Grid>
 
               <Grid item className="p-r-sm">

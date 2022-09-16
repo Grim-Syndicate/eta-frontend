@@ -1,5 +1,4 @@
 import React, { useState, useRef, useContext } from 'react'
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -7,18 +6,12 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormSwitch from '@mui/material/Switch';
 import { GrimsContext } from './GrimsProvider';
+import { NightshiftContext } from './NightshiftProvider';
 import Link from 'next/link';
 
 const Nav = () => {  
   const { isUsingLedger, setIsUsingLedger } = useContext(GrimsContext)
-
-  const theme = createTheme({
-      palette: {
-          primary: {
-              main: '#fff'
-          }
-      }
-  });
+  const { theme } = useContext(NightshiftContext)
   
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState(false);
   const handleOpenMobileMenu = () => {
@@ -31,24 +24,22 @@ const Nav = () => {
 return (
     <>
     <header className="mobile-app-bar">
-        <ThemeProvider theme={theme}>
-            <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static">
-                    <Toolbar className="is-flex-justify-space-between">
-                        <div className='is-text-centered'>
-                            <img src="/img/logo_eta.svg" alt="ETA logo" className="logo-eta img-fluid" />
-                        </div>
+        <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static">
+                <Toolbar className="is-flex-justify-space-between">
+                    <div className='is-text-centered'>
+                        <img src={ theme.palette.mode == 'light' ? "/img/logo_eta.svg" : "/img/logo_eta_white.svg"} alt="ETA logo" className="logo-eta img-fluid" />
+                    </div>
 
-                        <button className="mobile-menu-button button is-small" onClick={handleOpenMobileMenu}>
-                            Menu
-                        </button>
-                    </Toolbar>
-                </AppBar>
-            </Box>
-        </ThemeProvider>
+                    <button className="mobile-menu-button button is-small" onClick={handleOpenMobileMenu}>
+                        Menu
+                    </button>
+                </Toolbar>
+            </AppBar>
+        </Box>
     </header>
 
-    {isOpenMobileMenu && <ul className="mobile-menu">
+    {isOpenMobileMenu && <ul className={ theme.palette.mode == 'light' ? "mobile-menu" : 'mobile-menu dark'}>
         <li><Link href="/"><a className="navbar-nav-item">Dashboard</a></Link></li>
         <li><Link href="/office"><a className="navbar-nav-item">Office</a></Link></li>
         <li><Link href="/field-work"><a className="navbar-nav-item">Field Work</a></Link></li>
@@ -57,7 +48,7 @@ return (
         <li className='m-t-lg'>
             <WalletMultiButton className="wallet-adapter-button-custom m-b-sm" />
             <div>
-                <FormControlLabel control={
+                <FormControlLabel sx={{ color: theme.palette.mode == 'light' ? '#000' : '#fff' }} control={
                     <FormSwitch checked={isUsingLedger} onChange={(e) => {
                         setIsUsingLedger(e.target.checked)
                     }}/>
@@ -68,9 +59,10 @@ return (
         </li>
     </ul>}
 
-    <header className="header-main has-background-white">
+    <AppBar position='static' >
+        <Toolbar disableGutters className='header-main'>
         <div className='is-text-centered'>
-            <img src="/img/logo_eta.svg" alt="ETA logo" className="logo-eta img-fluid" />
+            <img src={ theme.palette.mode == 'light' ? "/img/logo_eta.svg" : "/img/logo_eta_white.svg"} alt="ETA logo" className="logo-eta img-fluid" />
         </div>
 
         <div className="navbar">
@@ -91,7 +83,8 @@ return (
             label="Use Ledger" />
             <WalletMultiButton className="wallet-adapter-button-custom m-l-md" />
         </div>
-    </header>
+        </Toolbar>
+    </AppBar>
     </>
 )}
 
