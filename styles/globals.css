@@ -661,6 +661,7 @@ hr {
 
 .header-main {
   display: none !important;
+  flex-direction: column !important;
 }
 
 .logo-eta {
@@ -1034,6 +1035,7 @@ input + .input-helper-text {
   .header-main {
     padding-top: 1rem;
     padding-bottom: 1rem;
+    flex-direction: row !important;
   }
 }
 
