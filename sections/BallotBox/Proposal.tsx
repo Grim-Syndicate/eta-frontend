@@ -436,7 +436,7 @@ const ProposalUI = (props: Props) => {
             </FormGroup>
           </>)}
 
-          {hasEnded && props.proposal.options && checked && (<>
+          {hasEnded && props.proposal.options && checked && results && (<>
             <h4 className={`${styles['proposal-subtitle']}`}>Proposal final votes</h4>
             {props.proposal.options.map((option, index) => {
               let children = <></>
