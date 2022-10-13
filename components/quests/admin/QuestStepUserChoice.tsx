@@ -8,17 +8,15 @@ interface Props {
 	data: any;
 	id: string; //nodeId
 }
-const QuestStepOption = (props: Props) => {
+const QuestStepUserChoice = (props: Props) => {
 	const nodeId = props.id;
 	const data = props.data;
 	const isConnectable = props.isConnectable;
 
+	
 	return (
 		<div className="react-flow__node-default" style={{ textAlign: "left", width: "100%", height: "100%", background: "transparent" }}>
-
-			<div style={{position:"absolute", left: 10, top: 5, fontWeight: 900}}>Step Choice</div>
-
-			<div className="m-t-md">
+			<div className="m-t-dmd">
 				Choice Text
 			</div>
 			<input
@@ -30,7 +28,7 @@ const QuestStepOption = (props: Props) => {
 			<Handle
 				type="source"
 				position={Position.Right}
-				id="a"
+				id={`${nodeId}_choice_right`}
 				style={{ top: 10, background: '#555' }}
 				isConnectable={isConnectable}
 			/>
@@ -39,4 +37,4 @@ const QuestStepOption = (props: Props) => {
 };
 
 
-export default memo(QuestStepOption);
+export default memo(QuestStepUserChoice);

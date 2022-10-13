@@ -30,7 +30,8 @@
     "react-dom": "18.2.0",
     "react-flow-renderer": "^10.3.17",
     "react-hot-toast": "^2.3.0",
-    "react-markdown": "^8.0.3"
+    "react-markdown": "^8.0.3",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.4.3",

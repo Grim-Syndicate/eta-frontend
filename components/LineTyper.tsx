@@ -53,8 +53,8 @@ export default function LineTyper({
   }
 
   const typeCharacter = async (character:string):Promise<void> => {  
-    console.log('typeCharacter')
-    console.log(character)
+    //console.log('typeCharacter')
+    //console.log(character)
  
     let line = finalLine
     line += character
@@ -74,7 +74,7 @@ export default function LineTyper({
   }
 
   useEffect(()=>{
-    console.log(finalLine)
+    //console.log(finalLine)
     if(lineToType.length > finalLine.length){
       const nextCharacter = lineToType[finalLine.length]
       typeCharacter(nextCharacter)
