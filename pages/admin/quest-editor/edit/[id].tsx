@@ -33,6 +33,8 @@ import WalletUtils from "../../../../utils/WalletUtils";
 import bs58 from "bs58";
 import QuestEndStep from "../../../../components/quests/admin/QuestEndStep";
 import { v4 as uuidv4 } from 'uuid';
+import ItemSelectorModal from "../../../../components/ItemSelectorModal";
+import QuestStepRewardModal from "../../../../components/quests/admin/QuestStepRewardModal";
 
 
 
@@ -78,6 +80,9 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
     const [quest, setQuest] = useState<any>(undefined);
     const [quests, setQuests] = useState([]);
+
+    const [unsaved, setUnsaved] = useState<boolean>(false);
+
 
     useEffect(() => {
         loadQuests();
@@ -126,6 +131,8 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
     const [showQuestPicker, setShowQuestPicker] = useState<boolean>(false);
 
     const [scriptBeingEdited, setScriptBeingEdited] = useState<any>(undefined);
+    const [scriptBeingGivenReward, setScriptBeingGivenReward] = useState<any>(undefined);
+
     const [bgColor, setBgColor] = useState(initBgColor);
 
     const [showEdges, setShowEdges] = useState<boolean>(false);
@@ -173,7 +180,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
             }
 
             let mainNode = nodes.find(a => a.id === step.id);
-            console.log("mainNode", {stepId: step.id, nodes})
+            console.log("mainNode", { stepId: step.id, nodes })
             if (step.progressType === "END_QUEST") {
                 //mainNode = nodes.find(a => a.)
             }
@@ -182,6 +189,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
             mainNode.data.duration = step.duration || 0;
             mainNode.data.actor = step.actor || "";
             mainNode.data.line = step.line || "";
+            mainNode.data.rewards = step.rewards || [];
 
             console.log("step", step);
             console.log("main", mainNode);
@@ -204,7 +212,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
             if (step.progressType !== "END_QUEST") {
 
 
-             //   continue;
+                //   continue;
             }
 
 
@@ -225,7 +233,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                         toObj = newNodes.find(a => a.id === option.goToStepId);
                     }
                     if (!toObj) {
-                        console.error(`Couldn't find option`, {option, newNodes});
+                        console.error(`Couldn't find option`, { option, newNodes });
                         continue;
                     }
 
@@ -278,9 +286,6 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
 
                         let toObj = undefined;
-                        if (choice.goToStep) {
-                            toObj = newNodes.filter(a => a.type === "questStep")[choice.goToStep];
-                        }
                         if (choice.goToStepId) {
                             toObj = newNodes.find(a => a.id === choice.goToStepId);
                         }
@@ -464,6 +469,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
     const addChoice = (stepId: string, nodeId: string) => {
 
+        setUnsaved(true);
         setNodes((nds) => {
             const id = uuidv4();
 
@@ -518,6 +524,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
     const addRandomStepOption = (stepId: string, nodeId: string) => {
 
+        setUnsaved(true);
         setNodes((nds) => {
             const id = Math.floor(Math.random() * 100);
 
@@ -578,6 +585,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
     const onStepNameChange = (event: any, nodeId: string) => {
         console.log("stepname " + nodeId, event);
+        setUnsaved(true);
         setNodes((nds) =>
             nds.map((node) => {
                 if (node.id !== nodeId) {
@@ -599,6 +607,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
     };
 
     const onStepChoiceTextChange = (event: any, nodeId: string) => {
+        setUnsaved(true);
         setNodes((nds) =>
             nds.map((node) => {
                 if (node.id !== nodeId) {
@@ -619,6 +628,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
     };
 
     const onStepScriptChange = (event: any, nodeId: string) => {
+        setUnsaved(true);
         setNodes((nds) =>
             nds.map((node) => {
                 if (node.id !== nodeId) {
@@ -780,7 +790,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
     const onClickCreateEndStep = () => {
 
-        
+
         const newNodes = [...nodess];
 
         let stepNodes: Array<any> = createEndStep("", "");
@@ -801,11 +811,11 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
         newNodes.push(
             {
                 id: mainStepId,
-                data: { name: stepName, duration: 5000, line: "", actor: "", addChoice: addChoice, onClickEditScript: onClickEditScript, onStepNameChange: onStepNameChange, onStepProgressTypeChange: onStepProgressTypeChange, onStepScriptChange: onStepScriptChange, script: "" },
+                data: { name: stepName, duration: 5000, rewards: [], line: "", actor: "", selectStepReward: selectStepReward, addChoice: addChoice, onClickEditScript: onClickEditScript, onStepNameChange: onStepNameChange, onStepProgressTypeChange: onStepProgressTypeChange, onStepScriptChange: onStepScriptChange, script: "" },
                 position: { x: (stepsCreated * 300), y: 0 },
                 className: 'light',
                 type: "questEndStep",
-                style: { border: "1px solid black", borderRadius: "5px", width: 250, height: 200 },
+                style: { border: "1px solid black", borderRadius: "5px", width: 250, height: 300 },
                 parentNode: undefined,
             });
 
@@ -863,6 +873,20 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
         return newNodes;
     }
+
+    const selectStepReward = (nodeId: string) => {
+        //setScriptBeingGivenReward
+        setNodes((nds) => {
+            const nodeg = nds.find(a => a.id == nodeId);
+            setScriptBeingGivenReward(nodeg);
+
+            return nds.map((node) => {
+                return node;
+            })
+        }
+        );
+
+    }
     //const nodessa = useNodes();
 
     const onClickEditScript = (nodeId: string) => {
@@ -873,13 +897,9 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
 
             const nodeg = nds.find(a => a.id == nodeId);
-            console.log("Opening " + nodeId, { nodeg, nds });
             setScriptBeingEdited(nodeg);
 
             return nds.map((node) => {
-                console.log("sdfsdf", nds);
-
-
                 return node;
             })
         }
@@ -893,6 +913,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
     const editNode = (nodeBeingEdited: any, property: string, value: any) => {
 
+        setUnsaved(true);
         console.log("editNode", nodeBeingEdited);
         if (scriptBeingEdited && nodeBeingEdited.id == scriptBeingEdited.id) {
             setScriptBeingEdited((nn: any) => {
@@ -929,6 +950,8 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
     const save = async () => {
         console.log("nodes", nodess);
         console.log("edges", edges);
+
+        setUnsaved(false);
 
 
         const mainStepNodes = nodess.filter(a => a.type === "questStep");
@@ -1028,7 +1051,8 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                 duration: data.duration,
                 editor: {
                     position: node?.position
-                }
+                },
+                rewards: data.rewards
             }
             steps.push(step);
         }
@@ -1061,9 +1085,27 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
         }
     }
 
+    const onSelectStepReward = (rangeMin: number, rangeMax: number, chance: number, type: string) => {
+
+        console.log("item", {rangeMin, rangeMax, chance});
+        let newRewards = [
+            {
+                rangeMin,
+                rangeMax,
+                chance,
+                type
+            }
+        ]
+        editNode(scriptBeingGivenReward, "rewards", newRewards)
+        setScriptBeingGivenReward(undefined);
+
+    }
+
     return (
         <>
             <HeadElement />
+
+            <QuestStepRewardModal open={scriptBeingGivenReward !== undefined} onClose={() => { setScriptBeingGivenReward(undefined) }} onSelectReward={(rangeMin: number, rangeMax: number, chance: number, type: string) => onSelectStepReward(rangeMin, rangeMax, chance, type)}></QuestStepRewardModal>
 
             <Modal
                 open={scriptBeingEdited !== undefined}
@@ -1164,6 +1206,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                     <div className="container main-content-wrapper">
                         <div>
                             <h1 className="has-text-white has-font-tomo has-text-shadow">Quest Editor</h1>
+                            {unsaved && (<h2>You have edited this quest! make sure to save soon</h2>)}
                             <Link href={`/admin/quest-editor`}>
                                 <a>View all Quests</a>
                             </Link>

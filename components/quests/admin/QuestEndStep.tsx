@@ -77,6 +77,23 @@ const QuestEndStep = (props: Props) => {
 				<div>Duration: {data.duration}ms</div>
 			</div>
 
+			<div className="m-t-md">
+				<div>Reward</div>
+				{data.rewards.length === 0 && (<div onClick={() => data.selectStepReward(nodeId)} style={{ fontSize: "5em", textAlign: "center", lineHeight: "75px", width: "75px", height: "75px", border: "1px solid rgba(255, 255, 255, 0.3)", borderRadius: "10px" }}>?</div>)}
+
+				{data.rewards.length > 0 && (
+					<div onClick={() => data.selectStepReward(nodeId)}  className="questEndStepReward" style={{ position: "relative", fontSize: "5em", textAlign: "center", lineHeight: "75px", width: "75px", height: "75px", border: "1px solid rgba(255, 255, 255, 0.3)", borderRadius: "10px" }}>
+						<img style={{width: "100%"}} src={data.rewards[0].image || "./img/astra.webp"} />
+						<div>{data.rewards[0].name}</div>
+
+						{data.rewards[0].rangeMin === data.rewards[0].rangeMax && (<div className="count">{data.rewards[0].rangeMin}</div>)}
+						{data.rewards[0].rangeMin !== data.rewards[0].rangeMax && (<div className="count2">{data.rewards[0].rangeMin} - {data.rewards[0].rangeMax}</div>)}
+						<div className="chance">{data.rewards[0].chance}% chance</div>
+
+					</div>
+				)}
+			</div>
+
 
 
 

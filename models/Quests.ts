@@ -33,6 +33,8 @@ export class QuestStep {
         };
     };
 
+    rewards: Array<QuestStepReward> = [];
+
     choiceChosenByUser!: string;
 }
 
@@ -48,4 +50,11 @@ export interface QuestStepAutoProgressOption {
 export interface QuestStepUserChoiceOption {
     text: string;
     goToStepId: string;
+}
+
+export interface QuestStepReward {
+    itemId: string;
+    chance: number;
+    rangeMax: number;
+    rangeMin: number;
 }

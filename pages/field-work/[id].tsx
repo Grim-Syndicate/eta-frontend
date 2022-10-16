@@ -44,6 +44,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 	const [rollButtonLabel, setRollButtonLabel] = useState('Roll');
 	const [isStoryFinished, setIsStoryFinished] = useState(false);
 
+	
 	const { grims, grimsReady, loadGrims, isLoadingGrims, isUsingLedger } = useContext(GrimsContext);
 	const [grimOnQuestSelected, setGrimOnQuestSelected] = useState<any>(null);
 	const [selectedGrims, setSelectedGrims] = useState<any[]>([]);
@@ -162,14 +163,23 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 	const finishQuest = async (quest: any) => {
 		if (!publicKey) throw new WalletNotConnectedError()
 		setIsFinishingQuest(true)
+
+		if (!questScript) {
+			console.error(`Can't finish, no script`);
+			return;
+		}
+		
+		const lastStep = questScript[questScript.length - 1];
 		let data: {
 			quest: string,
+			endStepId: string,
 			wallet: string | undefined,
 			message?: string,
 			bh?: string | null,
 			user?: any,
 		} = {
 			quest: quest._id,
+			endStepId: lastStep.id,
 			wallet: publicKey.toString()
 		};
 
@@ -295,34 +305,27 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 
 	useEffect(() => {
 		scrollToBottom()
-		console.log("questScript changed", questScript);
 		if (questScript) {
 			//reminder: a take is a "STEP"
 			const take = questScript[questScript.length - 1]
-			console.log("take", take);
 			if (take.duration) {
 				//Instantly go to the next step if the current step has type autoprogress
 				if (!take.progressType || take.progressType === "AUTO_PROGRESS") {
 					scriptTimer = Utils.Timer(take.duration)
 					scriptTimer.start().then(processNextStep);
-					console.log(`Auto progress timer`, take);
 
 				}
 				//Show user choice (the buttons) after the script has fully shown
 				else if (take.progressType === "USER_CHOICE") {
 					scriptTimer = Utils.Timer(take.duration)
 					scriptTimer.start().then(showUserChoiceOptions);
-					console.log(`User choice timer`, take);
 				} else {
-					console.log(`nooo`, take);
 					if (take.progressType === "END_QUEST") {
 
 						setIsStoryFinished(true)
 					}
 				}
 			} else {
-				console.log("No duration, process to next step instantly", take);
-
 				if (take.progressType === "USER_CHOICE") {
 					showUserChoiceOptions();
 				} else {
@@ -375,7 +378,6 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 			console.error(`nextStep doesn't exist!! couldn't find ${option.goToStepId}`);
 			return;
 		}
-		console.log("Go", { option, nextStep });
 		setCurrentQuestStep(nextStep);
 		renderNextStep(option.goToStepId)
 	}

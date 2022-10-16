@@ -1738,3 +1738,57 @@ input + .input-helper-text {
   height: 10px !important;
   width: 10px !important;
 }
+
+.item {
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.questEndStepReward .count {
+  position: absolute;
+  left: calc(100% - 2px);
+  top: 2px;
+  transform: translateX(-100%);
+
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  border-radius: 10000px;
+  font-size: 0.15em;
+
+  width: 40px;
+  height:15px;
+  line-height: 15px;
+  text-align: center;
+}
+.questEndStepReward .count2 {
+  position: absolute;
+  left: calc(100% - 2px);
+  top: 2px;
+  transform: translateX(-100%);
+
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  border-radius: 10000px;
+  font-size: 0.15em;
+
+  width: 60px;
+  height:15px;
+  line-height: 15px;
+  text-align: center;
+}
+.questEndStepReward .chance {
+  position: absolute;
+  left: 0px;
+  top: 100%;
+  transform: translateY(-100%);
+
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  border-radius: 10000px;
+  font-size: 0.15em;
+
+  width: 100%;
+  height:15px;
+  line-height: 15px;
+  text-align: center;
+}
