@@ -22,9 +22,9 @@ const QuestStep = (props: Props) => {
 
 	}, [data]);
 	return (
-		<div className="react-flow__node-default" style={{ textAlign: "left", width: "100%", height: "100%", background: "transparent" }}>
+		<div className="node-default" style={{ textAlign: "left", width: "100%", height: "100%", background: "transparent" }}>
 
-			{data.isInitialStep && (<div style={{ backgroundColor: "red", color: "white", padding: "10px 20px", borderRadius: "10px", transform: "translateX(-50%)", position: "absolute", left: "10%", top: -30, fontWeight: 900 }}>INTRO STEP</div>)}
+			{data.isInitialStep && (<div style={{ backgroundColor: "red", color: "white", padding: "10px 20px", borderRadius: "10px", transform: "translateX(-50%)", position: "absolute", left: "10%", top: -30, fontWeight: 900, fontSize: "0.8em" }}>INTRO STEP</div>)}
 
 
 			{/*<div style={{ display: "flex", justifyContent: "center", alignItems: "center", border: "1px solid black", backgroundColor: "white", color: "black", padding: "10px 20px", borderRadius: "10px", transform: "translateX(-50%)", position: "absolute", left: "100%", top: -30, fontWeight: 900, fontSize: 10 }}>
@@ -36,7 +36,7 @@ const QuestStep = (props: Props) => {
 	</div>*/}
 
 
-			<div style={{ fontWeight: "bold" }}>Quest Step: {data.name}</div>
+			{/*<div style={{ fontWeight: "bold" }}>Quest Step: {data.name}</div>*/}
 
 
 			<Handle
@@ -73,6 +73,7 @@ const QuestStep = (props: Props) => {
 			/>
 
 
+			{/*
 			<div>
 				Name
 			</div>
@@ -81,11 +82,13 @@ const QuestStep = (props: Props) => {
 				type="text"
 				onChange={(e) => data.onStepNameChange(e, nodeId)}
 				defaultValue={data.name}
-			/>
+			/>*/}
 
 
 			<div className="m-t-sm m-b-md">
-				Script <span onClick={() => data.onClickEditScript(nodeId)}>[Edit]</span>
+				<div>
+					<Button size="small" onClick={() => data.onClickEditScript(nodeId)} className='m-b-sm' color='secondary' variant="contained">Edit Script</Button>
+				</div>
 				<Box sx={{ fontWeight: 'bold' }}>Actor: {data.actor}</Box>
 				<div>Line: {data.line.substr(0, 50)}...</div>
 				<div>Duration: {data.duration}ms</div>
@@ -101,7 +104,7 @@ const QuestStep = (props: Props) => {
 				defaultValue={data.script}
 			/>*/}
 
-			<div>Progress Type {data.progressType}</div>
+			<div>Progress Type</div>
 			<ToggleButtonGroup
 				color="primary"
 				value={data.progressType}

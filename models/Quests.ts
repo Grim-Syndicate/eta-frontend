@@ -5,6 +5,14 @@ export type QuestScriptType = "USER_CHOICE" | "AUTO_PROGRESS" | "END_QUEST";
 export class Quest {
     _id: any;
     title!: string;
+    image!: string;
+    shortDescription!: string;
+    stamina!: number;
+    
+    enabled?: boolean;
+    enabledFrom?: number = 1656953325000;
+    enabledTo: number = 1688489325000;
+
     questScript!: Array<QuestStep>;
 }
 

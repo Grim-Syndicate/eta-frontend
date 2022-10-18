@@ -16,14 +16,9 @@ const QuestEndStep = (props: Props) => {
 	const nodeId = props.id;
 
 	return (
-		<div className="react-flow__node-default" style={{ textAlign: "left", width: "100%", height: "100%", background: "black", color: "white" }}>
+		<div className="node-default" style={{ textAlign: "left", width: "100%", height: "100%", background: "black", color: "white" }}>
 
 			{data.isInitialStep && (<div style={{ backgroundColor: "red", color: "white", padding: "10px 20px", borderRadius: "10px", transform: "translateX(-50%)", position: "absolute", left: "10%", top: -30, fontWeight: 900 }}>INTRO STEP</div>)}
-
-
-
-			<div style={{ fontWeight: "bold" }}>Quest Ending: {data.name}</div>
-
 
 			<Handle
 				id={nodeId + "handle1"}
@@ -58,32 +53,23 @@ const QuestEndStep = (props: Props) => {
 				isConnectable={isConnectable}
 			/>
 
-
-			<div>
-				Name
-			</div>
-			<input
-				className="nodrag"
-				type="text"
-				onChange={(e) => data.onStepNameChange(e, nodeId)}
-				defaultValue={data.name}
-			/>
-
-
 			<div className="m-t-sm m-b-md">
-				Script <span onClick={() => data.onClickEditScript(nodeId)}>[Edit]</span>
+				<div>
+					<Button size="small" onClick={() => data.onClickEditScript(nodeId)} className='m-b-sm' color='primary' variant="contained">Edit Script</Button>
+				</div>
 				<Box sx={{ fontWeight: 'bold' }}>Actor: {data.actor}</Box>
 				<div>Line: {data.line.substr(0, 50)}...</div>
 				<div>Duration: {data.duration}ms</div>
 			</div>
+
 
 			<div className="m-t-md">
 				<div>Reward</div>
 				{data.rewards.length === 0 && (<div onClick={() => data.selectStepReward(nodeId)} style={{ fontSize: "5em", textAlign: "center", lineHeight: "75px", width: "75px", height: "75px", border: "1px solid rgba(255, 255, 255, 0.3)", borderRadius: "10px" }}>?</div>)}
 
 				{data.rewards.length > 0 && (
-					<div onClick={() => data.selectStepReward(nodeId)}  className="questEndStepReward" style={{ position: "relative", fontSize: "5em", textAlign: "center", lineHeight: "75px", width: "75px", height: "75px", border: "1px solid rgba(255, 255, 255, 0.3)", borderRadius: "10px" }}>
-						<img style={{width: "100%"}} src={data.rewards[0].image || "./img/astra.webp"} />
+					<div onClick={() => data.selectStepReward(nodeId)} className="questEndStepReward" style={{ position: "relative", fontSize: "5em", textAlign: "center", lineHeight: "75px", width: "75px", height: "75px", border: "1px solid rgba(255, 255, 255, 0.3)", borderRadius: "10px" }}>
+						<img style={{ width: "100%" }} src={data.rewards[0].image || "/img/astra.webp"} />
 						<div>{data.rewards[0].name}</div>
 
 						{data.rewards[0].rangeMin === data.rewards[0].rangeMax && (<div className="count">{data.rewards[0].rangeMin}</div>)}

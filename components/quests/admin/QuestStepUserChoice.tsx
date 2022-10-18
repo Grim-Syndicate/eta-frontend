@@ -15,7 +15,7 @@ const QuestStepUserChoice = (props: Props) => {
 
 	
 	return (
-		<div className="react-flow__node-default" style={{ textAlign: "left", width: "100%", height: "100%", background: "transparent" }}>
+		<div className="node-default" style={{ textAlign: "left", width: "100%", height: "100%", background: "transparent" }}>
 			<div className="m-t-dmd">
 				Choice Text
 			</div>

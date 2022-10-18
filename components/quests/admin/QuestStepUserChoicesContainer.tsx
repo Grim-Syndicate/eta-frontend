@@ -16,7 +16,7 @@ const QuestStepUserChoicesContainer = (props: Props) => {
 	const isConnectable = props.isConnectable;
 
 	return (
-		<div className="react-flow__node-default" style={{ textAlign: "left", width: "100%", height: "100%", background: "transparent" }}>
+		<div className="node-default" style={{ textAlign: "left", width: "100%", height: "100%", background: "transparent" }}>
 
 
 			<Button onClick={() => data.addChoice(stepId, nodeId)} variant="contained" size="small" style={{ position: "relative" }}>Add</Button>

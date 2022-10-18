@@ -29,7 +29,7 @@ const modalStyle = {
 
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
-const getQuestsURL = domainURL + "/quests";
+const getQuestsURL = domainURL + "/quests?includeDisabled=true";
 
 
 const QuestEditorList = React.forwardRef((nftFunctions, ref) => {
@@ -56,6 +56,8 @@ const QuestEditorList = React.forwardRef((nftFunctions, ref) => {
 	return (
 		<>
 			<HeadElement />
+
+
 
 
 			<div>

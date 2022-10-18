@@ -115,7 +115,7 @@ const CreateItem = React.forwardRef((nftFunctions, ref) => {
 					<Grid container spacing={2} className="m-t-lg m-b-lg">
 						{items.map((item) => (
 
-							<Grid item xs={2} className="item p-b-md">
+							<Grid item xs={2} key={item._id} className="item p-b-md">
 								<Link href={`/admin/items/edit/${item._id}`}>
 									<a>
 										<img className="is-fullwidth" src={item.image} />

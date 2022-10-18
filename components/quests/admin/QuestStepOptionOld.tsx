@@ -9,7 +9,7 @@ interface Props {
 }
 const QuestStepOptionOld = ({isConnectable, data}: Props) => {
   return (
-    <div className="react-flow__node-default" style={{backgroundColor: "white", width: "150px"}}>
+    <div className="node-default" style={{backgroundColor: "white", width: "150px"}}>
       <Handle
         type="target"
         position={Position.Left}

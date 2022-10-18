@@ -35,6 +35,7 @@ import QuestEndStep from "../../../../components/quests/admin/QuestEndStep";
 import { v4 as uuidv4 } from 'uuid';
 import ItemSelectorModal from "../../../../components/ItemSelectorModal";
 import QuestStepRewardModal from "../../../../components/quests/admin/QuestStepRewardModal";
+import ManageQuest from "../../../../components/quests/admin/ManageQuest";
 
 
 
@@ -66,7 +67,7 @@ const modalStyle = {
 };
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
-const getQuestsURL = domainURL + "/quests";
+const getQuestsURL = domainURL + "/quests?includeDisabled=true";
 
 const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
@@ -105,7 +106,10 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
     useEffect(() => {
 
         const active = quests.find((a: any) => a._id === id);
-        if (!active) return;
+        if (!active) {
+            console.error(`Coudln't find`, {id, quests});
+            return;
+        }
         console.log("active", active);
         console.log("Quests", quests);
 
@@ -138,6 +142,8 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
     const [showEdges, setShowEdges] = useState<boolean>(false);
     const [nodess, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+    const [isOpenEditQuestModal, setIsOpenEditQuestModal] = useState<boolean>(false);
 
     useEffect(() => {
         /*
@@ -403,7 +409,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
             //console.log(" ");
             //if (node.id !== "step0") continue;
 
-            const children = nodes.filter((a: any) => a.id.startsWith(node.id + "_"));
+            const children = nodes.filter((a: any) => a.data?.stepId === node.data?.stepId || a.id.startsWith(node.id + "_"));
             const progressType = node.data.progressType;
             //console.log(`${node.id} ${progressType} has children`, children);
             for (let child of children) {
@@ -843,7 +849,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                 position: { x: (stepsCreated * 300), y: 0 },
                 className: 'light',
                 type: "questStep",
-                style: { border: "1px solid black", borderRadius: "5px", width: 250, height: 430 },
+                style: { border: " ", background: "white", borderRadius: "5px", width: 250, height: 430 },
                 parentNode: undefined,
             });
 
@@ -1075,7 +1081,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
         const [signature, blockhash] = await WalletUtils.verifyWallet(connection, publicKey, 'admin-update-quest', data, false, signMessage, signTransaction);
 
         if (signature) {
-            const url = `${domainURL}/quests/admin/update`
+            const url = `${domainURL}/admin/quest/update`
             data.message = bs58.encode(signature)
             data.bh = blockhash
 
@@ -1087,7 +1093,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
     const onSelectStepReward = (rangeMin: number, rangeMax: number, chance: number, type: string) => {
 
-        console.log("item", {rangeMin, rangeMax, chance});
+        console.log("item", { rangeMin, rangeMax, chance });
         let newRewards = [
             {
                 rangeMin,
@@ -1101,9 +1107,15 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
     }
 
+    const handleQuestUpdated = (quest: Quest) => {
+        alert("Please refresh the page");
+    }
+
     return (
         <>
             <HeadElement />
+
+
 
             <QuestStepRewardModal open={scriptBeingGivenReward !== undefined} onClose={() => { setScriptBeingGivenReward(undefined) }} onSelectReward={(rangeMin: number, rangeMax: number, chance: number, type: string) => onSelectStepReward(rangeMin, rangeMax, chance, type)}></QuestStepRewardModal>
 
@@ -1211,8 +1223,17 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                                 <a>View all Quests</a>
                             </Link>
                         </div>
-                        <Nightshift />
+                        <Button color="secondary" variant="contained" onClick={() => setIsOpenEditQuestModal(true)}>Edit Quest</Button>
+
                     </div>
+                    
+            <ManageQuest
+                isEditing={true}
+                quest={quest}
+                isOpen={isOpenEditQuestModal}
+                modalClosed={() => setIsOpenEditQuestModal(false)}
+                questSet={quest => { handleQuestUpdated(quest); }}
+                onQuestDelete={() => { alert("This hasn't been implemented yet") }} />
                 </div>
                 <main className="container main-content-wrapper main-wrapper m-t-md">
 
