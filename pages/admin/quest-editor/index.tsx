@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import Box from '@mui/material/Box';
@@ -13,6 +13,7 @@ import PublicSection from "../../../components/PublicSection";
 import { Button, ButtonGroup, Grid, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import Link from "next/link";
+import { GrimsContext } from "../../../components/GrimsProvider";
 
 
 const modalStyle = {
@@ -36,10 +37,15 @@ const QuestEditorList = React.forwardRef((nftFunctions, ref) => {
 
 	const { wallet } = useWallet();
 	const [quests, setQuests] = useState([]);
+	const { isAdmin } = useContext(GrimsContext);
 
 	useEffect(() => {
+		if (!isAdmin) {
+			//alert("This page is only for admins. Bug Lothar for the 'ADMIN' role =D")
+			return;
+		}
 		loadQuests();
-	}, []);
+	}, [isAdmin]);
 
 	const loadQuests = async () => {
 		try {
@@ -51,6 +57,10 @@ const QuestEditorList = React.forwardRef((nftFunctions, ref) => {
 		} catch (error) {
 			console.error('error...', error)
 		}
+	}
+
+	if (!isAdmin) {
+		return (<div>You're not an admin!</div>)
 	}
 
 	return (

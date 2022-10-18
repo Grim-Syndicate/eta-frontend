@@ -45,6 +45,7 @@ function GrimsProvider({ children }:any) {
   const [userRoles, setUserRoles] = useState<Array<string>>([]);
   const canCreateRaffle = userRoles && userRoles.includes("RAFFLE_CREATOR");
   const canCreateProposal = userRoles && userRoles.includes("PROPOSAL_CREATOR");
+	const isAdmin = userRoles && userRoles.includes("ADMIN");
 
   const [isPublicStateLoaded, setIsPublicStateLoaded] = useState(false);
   const [allStakedGrims, setAllStakedGrims] = useState(0);
@@ -281,6 +282,7 @@ function GrimsProvider({ children }:any) {
       allStakedGrims,
       lockedValueSOL,
       lockedValueUSD,
+      isAdmin
     }}>
       {children}
     </GrimsContext.Provider>
