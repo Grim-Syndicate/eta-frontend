@@ -14,6 +14,7 @@ import { Button, ButtonGroup, Grid, MenuItem, Modal, Select, TextField, Typograp
 import WalletUtils from "../../../utils/WalletUtils";
 import bs58 from "bs58";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 
 const modalStyle = {
@@ -37,6 +38,8 @@ const CreateQuest = React.forwardRef((nftFunctions, ref) => {
 	const { wallet } = useWallet();
 	const { publicKey, sendTransaction, signTransaction, signMessage } = useWallet();
 
+	const router = useRouter();
+	
 	const onCreateQuest = async() => {
 		if (!publicKey) {
 			alert("Connect wallet first");
@@ -65,6 +68,8 @@ const CreateQuest = React.forwardRef((nftFunctions, ref) => {
 			data.bh = blockhash
 
 			const result = await axios.post(url, data);
+
+			router.push("/admin/quest-editor")
 			alert("Created!");
 		}
 	}
