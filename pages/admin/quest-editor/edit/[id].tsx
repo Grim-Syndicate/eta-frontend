@@ -214,6 +214,19 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
         }
 
 
+        //Convert steps with no goStepId to use it!
+        for (let step of quest.questScript) {
+            for (let option of step.options) {
+                if (option.goToStepId) continue;
+                const node = newNodes.filter(a => a.type === "questStep")[option.take];
+                if (node) {
+                    option.goToStepId = node.id; 
+                } else {
+                    console.error(`Couldn't find :(`, {step, option});
+                }
+            }
+        }
+
         for (let step of quest.questScript) {
             if (step.progressType !== "END_QUEST") {
 
@@ -250,7 +263,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                         {
                             id: `${mainNode.id}_questRandomStep${index}`,
                             data: { label: 'Option', chance: option.chance, stepId: mainNode.id, editNode: editNode, onStepChoiceTextChange: onStepChoiceTextChange, color: initBgColor },
-                            position: { x: 10, y: 70 },
+                            position: { x: 10, y: (70 + ((index - 1) * 70)) },
                             parentNode: `${mainNode.id}_randomStepsContainer`,
                             type: "questStepRandomStep",
                             dragHandle: '.custom-drag-handle',

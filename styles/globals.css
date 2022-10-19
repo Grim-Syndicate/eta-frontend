@@ -1803,3 +1803,6 @@ input + .input-helper-text {
   width: 150px;
 
 }
+.react-flow__edges {
+  z-index: 5000 !important;
+}
