@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
@@ -11,6 +11,7 @@ import {
     SolletWalletAdapter,
     TorusWalletAdapter,
     GlowWalletAdapter,
+    BackpackWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import {
     WalletModalProvider,
@@ -36,6 +37,7 @@ const WalletConnectionProvider = ({children}:any) => {
     const wallets = useMemo(
         () => [
             new PhantomWalletAdapter(),
+            new BackpackWalletAdapter(),
             new BraveWalletAdapter(),
             new GlowWalletAdapter(),
             new SolflareWalletAdapter(),
