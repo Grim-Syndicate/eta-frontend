@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import Fade from "@mui/material/Fade";
@@ -14,7 +14,6 @@ import { Dialog } from "@mui/material";
 const p2pModalStyle = {
 	display: 'flex',
 	flexDirection: 'column',
-	width: 800,
 	maxWidth: '80vw',
 	maxHeight: '90vh',
 	bgcolor: "white",
@@ -53,6 +52,26 @@ const GetRaffleWinners = (props: Props) => {
 
 	const [winners, setWinners] = useState<Array<string>>([]);
 
+	const actionButtonDisabled = useMemo(()=> {
+		if(winners && winners.length > 0){
+			if(props.raffle?.beneficiary && !props.raffle?.beneficiaryPaymentID){
+				return false
+			}
+			return true
+		}
+		return false		
+	},[props.raffle, winners])
+
+	const actionButtonLabel = useMemo(()=> {
+		if(winners && winners.length > 0){
+			if(props.raffle?.beneficiary && !props.raffle?.beneficiaryPaymentID){
+				return 'Pay beneficiary'		
+			}
+			return 'Raffle closed'
+		}
+		return 'Draw raffle winners'		
+	},[props.raffle, winners])
+
 	useEffect(() => {
 		if (!props.raffle?.winners) {
 			setWinners([]);
@@ -85,15 +104,14 @@ const GetRaffleWinners = (props: Props) => {
 		const updateRaffleWinnersUrl = `${domainURL}/auction-house/update-raffle-winners`
 		const result = await axios.post(updateRaffleWinnersUrl, data);
 		if (result.data.error) {
-
 			toast.error(result.data.error);
 			return;
 		}
 
 		setWinners(result.data.winners);
-
-
-
+		if(result.data.beneficiaryPaid && result.data.beneficiaryPaid > 0){
+			toast.success(`${props.raffle.beneficiary} paid ${result.data.beneficiaryPaid} $ASTRA`)
+		}
 	}
 	return (
 		<Dialog
@@ -127,8 +145,8 @@ const GetRaffleWinners = (props: Props) => {
 							{'Cancel and Close'}
 						</button>
 
-						<button type="button" disabled={winners && winners.length > 0} className="button is-primary is-xl m-l-lg" onClick={getRaffleWinners}>
-							Get raffle winners
+						<button type="button" disabled={actionButtonDisabled} className="button is-primary is-xl m-l-lg" onClick={getRaffleWinners}>
+							{actionButtonLabel}
 						</button>
 
 					</div>
