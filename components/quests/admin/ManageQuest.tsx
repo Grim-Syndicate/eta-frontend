@@ -177,8 +177,12 @@ const ManageQuest = (props: Props) => {
 			if (result.data.error) {
 				setCreateQuestFailed(true);
 				setSendErrorMessage(result.data.error);
+				alert("Save failed :( " + result.data.error);
 				// setSendErrorMessage(`Information is missing from your Quest`);
 				return;
+			} else if (result.data.success) {
+
+				alert("Save complete! :D ");
 			}
 
 			if (result.data.id) {
@@ -251,7 +255,7 @@ const ManageQuest = (props: Props) => {
 	}
 
 	return (
-		<Fade in={props.isOpen} style={{display: `${props.isOpen ? 'block' : 'none'}`}}>
+		<Fade in={props.isOpen} style={{ display: `${props.isOpen ? 'block' : 'none'}` }}>
 			<Box sx={p2pModalStyle}>
 
 				<Toaster position='top-center' reverseOrder={false} toastOptions={{ duration: 5000 }} />

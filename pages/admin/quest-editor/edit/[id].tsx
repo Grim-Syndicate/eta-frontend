@@ -1100,6 +1100,12 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
             const result = await axios.post(url, data);
             console.log("result", result);
+            if (result.data?.success) {
+
+				alert("Save complete! :D ");
+			} else {
+                alert("Save failed :(");
+            }
 
         }
     }
