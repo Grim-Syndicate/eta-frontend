@@ -996,7 +996,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                 console.log("111", nodeEdge);
                 if (!nodeEdge) {
                     console.log(`Couldn't find edge ${choiceNode.id} in`, edges);
-                    continue;
+                    //continue;
                 }
 
 
@@ -1005,7 +1005,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
                 stepUserChoices.push({
                     text: choiceNode.data.choiceText,
-                    goToStepId: nodeEdge.target
+                    goToStepId: nodeEdge?.target
 
                 })
                 /*
