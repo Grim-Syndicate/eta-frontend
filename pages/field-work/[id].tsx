@@ -44,7 +44,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 	const [rollButtonLabel, setRollButtonLabel] = useState('Roll');
 	const [isStoryFinished, setIsStoryFinished] = useState(false);
 
-	
+
 	const { grims, grimsReady, loadGrims, isLoadingGrims, isUsingLedger } = useContext(GrimsContext);
 	const [grimOnQuestSelected, setGrimOnQuestSelected] = useState<any>(null);
 	const [selectedGrims, setSelectedGrims] = useState<any[]>([]);
@@ -168,7 +168,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 			console.error(`Can't finish, no script`);
 			return;
 		}
-		
+
 		const lastStep = questScript[questScript.length - 1];
 		let data: {
 			quest: string,
@@ -731,16 +731,25 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 					if (grimOnQuestSelected.quest.progress >= 1) {
 						//quest done
 						return <>
-							<div className="quest-header">
-								<h2>Assignment complete!</h2>
-								<p>Congratulations on an Assignment well done, <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>. You have been rewarded with the following:</p>
-								<div className="quest-rewards">
-									{Object.keys(grimOnQuestSelected.quest.claimableRewards).map(function (reward) {
-										let value = grimOnQuestSelected.quest.claimableRewards[reward]
-										return <p key={reward}>{value} {reward}</p>
-									})}
+							{Object.keys(grimOnQuestSelected?.quest?.claimableRewards).length > 0 && (
+								<div className="quest-header">
+									<h2>Assignment complete!</h2>
+									<p>Congratulations on an Assignment well done, <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>. You have been rewarded with the following:</p>
+									<div className="quest-rewards">
+										{grimOnQuestSelected.quest.claimableRewards && (Object.keys(grimOnQuestSelected.quest.claimableRewards).map(function (reward) {
+											let value = grimOnQuestSelected.quest.claimableRewards[reward]
+											return <p key={reward}>{value} {reward}</p>
+										}))}
+									</div>
 								</div>
-							</div>
+							)}
+							{(!grimOnQuestSelected?.quest?.claimableRewards || Object.keys(grimOnQuestSelected?.quest?.claimableRewards).length === 0) && (
+								<div className="quest-header">
+									<h2>Assignment complete!</h2>
+									<p>Congratulations on an Assignment well done, <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>. Sadly you haven't been rewarded with anything.</p>
+
+								</div>
+							)}
 							<Grid item container direction={'column'} flex={1} className="quest-content-container">
 								<div className="quest-content done">
 									<div className="quest-img-container">
@@ -749,7 +758,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 								</div>
 							</Grid>
 							<div className="quest-footer">
-								<button className="button is-primary is-fullwidth" onClick={() => claimRewards(grimOnQuestSelected.quest)} disabled={isClaimingRewards} >{isClaimingRewards ? <CircularProgress color="inherit" /> : 'Claim Rewards'}</button>
+								<button className="button is-primary is-fullwidth" onClick={() => claimRewards(grimOnQuestSelected.quest)} disabled={isClaimingRewards} >{isClaimingRewards ? <CircularProgress color="inherit" /> : Object.keys(grimOnQuestSelected?.quest?.claimableRewards).length > 0 ? 'Claim Rewards' : 'Finish'}</button>
 							</div>
 						</>
 					} else {
