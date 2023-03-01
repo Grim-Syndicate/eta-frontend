@@ -623,6 +623,8 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 
 	}
 
+	const claimableRewards = grimOnQuestSelected?.quest?.claimableRewards ? Object.keys(grimOnQuestSelected?.quest?.claimableRewards) : [];
+
 	const renderQuestContent = function () {
 		if (!publicKey) {
 			return <>
@@ -731,19 +733,19 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 					if (grimOnQuestSelected.quest.progress >= 1) {
 						//quest done
 						return <>
-							{Object.keys(grimOnQuestSelected?.quest?.claimableRewards).length > 0 && (
+							{claimableRewards.length > 0 && (
 								<div className="quest-header">
 									<h2>Assignment complete!</h2>
 									<p>Congratulations on an Assignment well done, <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>. You have been rewarded with the following:</p>
 									<div className="quest-rewards">
-										{grimOnQuestSelected.quest.claimableRewards && (Object.keys(grimOnQuestSelected.quest.claimableRewards).map(function (reward) {
+										{grimOnQuestSelected.quest.claimableRewards && (claimableRewards.map(function (reward) {
 											let value = grimOnQuestSelected.quest.claimableRewards[reward]
 											return <p key={reward}>{value} {reward}</p>
 										}))}
 									</div>
 								</div>
 							)}
-							{(!grimOnQuestSelected?.quest?.claimableRewards || Object.keys(grimOnQuestSelected?.quest?.claimableRewards).length === 0) && (
+							{claimableRewards.length === 0 && (
 								<div className="quest-header">
 									<h2>Assignment complete!</h2>
 									<p>Congratulations on an Assignment well done, <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>. Sadly you haven't been rewarded with anything.</p>
@@ -758,7 +760,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 								</div>
 							</Grid>
 							<div className="quest-footer">
-								<button className="button is-primary is-fullwidth" onClick={() => claimRewards(grimOnQuestSelected.quest)} disabled={isClaimingRewards} >{isClaimingRewards ? <CircularProgress color="inherit" /> : Object.keys(grimOnQuestSelected?.quest?.claimableRewards).length > 0 ? 'Claim Rewards' : 'Finish'}</button>
+								<button className="button is-primary is-fullwidth" onClick={() => claimRewards(grimOnQuestSelected.quest)} disabled={isClaimingRewards} >{isClaimingRewards ? <CircularProgress color="inherit" /> : claimableRewards.length > 0 ? 'Claim Rewards' : 'Finish'}</button>
 							</div>
 						</>
 					} else {

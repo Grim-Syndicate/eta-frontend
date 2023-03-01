@@ -1071,9 +1071,18 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                 editor: {
                     position: node?.position
                 },
+                options: [],
+                userChoices: [],
                 rewards: data.rewards
             }
             steps.push(step);
+        }
+
+        for (let step of steps) {
+            if (step.progressType !== "END_QUEST" && step.options.length === 0 && step.userChoices.length === 0) {
+                alert("You have a step that is not an end step and has no options or choices. Please fix it before saving.");
+                return;
+            }
         }
 
         console.log("steps", steps);
@@ -1267,6 +1276,9 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                         <Button className="m-b-sm" variant="contained" onClick={save}>Save</Button>
                         {/*<Button className="m-b-sm" variant="contained" color="info" onClick={() => setShowEdges(true)}>Show Nodes</Button>*/}
                     </ButtonGroup>
+
+                    <div>Press the delete key to remove a step</div>
+                    <div>Use the {'{'}participant{'}'} template as the Actor to make the Actor the Grim's name (Agent #3010 etc) </div>
 
                     <ReactFlowProvider>
                         <ReactFlow
