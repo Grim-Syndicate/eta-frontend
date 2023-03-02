@@ -253,7 +253,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 					if (result && result.data) {
 						if (result.data.success) {
 							if (result.data.quest) {
-								toast.success('Rewards claimed successfully')
+								//toast.success('Rewards claimed successfully')
 								await loadGrims()
 								await loadActiveQuests()
 								setGrimOnQuestSelected(null)
