@@ -1,4 +1,4 @@
-import { Box, Button, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Button, FormControlLabel, Switch, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import React, { memo, useEffect } from 'react';
 
 import { Handle, Position, useUpdateNodeInternals } from 'react-flow-renderer';
@@ -61,6 +61,8 @@ const QuestEndStep = (props: Props) => {
 				<div>Line: {data.line.substr(0, 50)}...</div>
 				<div>Duration: {data.duration}ms</div>
 			</div>
+
+			<FormControlLabel control={<Switch checked={data.isPositiveOutcome} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { data.onTogglePositiveOutcome(nodeId, e.target.checked)}} />}  label="Positive Outcome" />
 
 
 			<div className="m-t-md">

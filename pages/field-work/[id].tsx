@@ -160,6 +160,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 		}
 	};
 
+
 	const finishQuest = async (quest: any) => {
 		if (!publicKey) throw new WalletNotConnectedError()
 		setIsFinishingQuest(true)
@@ -624,7 +625,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 	}
 
 	const claimableRewards = grimOnQuestSelected?.quest?.claimableRewards ? Object.keys(grimOnQuestSelected?.quest?.claimableRewards) : [];
-
+	const lastStep = questScript && questScript.length > 0 ? questScript[questScript.length - 1] : null;
 	const renderQuestContent = function () {
 		if (!publicKey) {
 			return <>
@@ -735,8 +736,18 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 						return <>
 							{claimableRewards.length > 0 && (
 								<div className="quest-header">
-									<h2>Assignment complete!</h2>
-									<p>Congratulations on an Assignment well done, <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>. You have been rewarded with the following:</p>
+									<h2>{lastStep?.isPositiveOutcome ? 'Assignment complete!' : 'Assignment failed'} </h2>
+									{lastStep?.isPositiveOutcome && (
+										<p>
+											Congratulations on an Assignment well done, <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>. You have been rewarded with the following:
+										</p>
+									)}
+									{!lastStep?.isPositiveOutcome && (
+										<p>
+											Don't give up <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>, you can always try again!
+										</p>
+									)}
+								
 									<div className="quest-rewards">
 										{grimOnQuestSelected.quest.claimableRewards && (claimableRewards.map(function (reward) {
 											let value = grimOnQuestSelected.quest.claimableRewards[reward]
@@ -747,9 +758,17 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 							)}
 							{claimableRewards.length === 0 && (
 								<div className="quest-header">
-									<h2>Assignment complete!</h2>
-									<p>Congratulations on an Assignment well done, <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>. Sadly you haven't been rewarded with anything.</p>
-
+									<h2>{lastStep?.isPositiveOutcome ? 'Assignment complete!' : 'Assignment failed'} </h2>
+									{lastStep?.isPositiveOutcome && (
+										<p>
+											Congratulations on an Assignment well done, <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>.
+										</p>
+									)}
+									{!lastStep?.isPositiveOutcome && (
+										<p>
+											Don't give up <strong>Agent #{grimOnQuestSelected.grim.metadata.ID}</strong>, you can always try again!
+										</p>
+									)}
 								</div>
 							)}
 							<Grid item container direction={'column'} flex={1} className="quest-content-container">

@@ -26,6 +26,7 @@ export class QuestStep {
     action!: string;
     duration!: number;
 
+    isPositiveOutcome?: boolean;
     
     //the auto_progress options, not renaming this as it'll break existing quests. Maybe soon.
     options!: Array<QuestStepAutoProgressOption>;

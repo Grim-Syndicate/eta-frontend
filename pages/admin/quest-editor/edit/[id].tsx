@@ -107,7 +107,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
 
         const active = quests.find((a: any) => a._id === id);
         if (!active) {
-            console.error(`Coudln't find`, {id, quests});
+            console.error(`Coudln't find`, { id, quests });
             return;
         }
         console.log("active", active);
@@ -196,6 +196,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
             mainNode.data.actor = step.actor || "";
             mainNode.data.line = step.line || "";
             mainNode.data.rewards = step.rewards || [];
+            mainNode.data.isPositiveOutcome = step.isPositiveOutcome;
 
             console.log("step", step);
             console.log("main", mainNode);
@@ -220,9 +221,9 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                 if (option.goToStepId) continue;
                 const node = newNodes.filter(a => a.type === "questStep")[option.take];
                 if (node) {
-                    option.goToStepId = node.id; 
+                    option.goToStepId = node.id;
                 } else {
-                    console.error(`Couldn't find :(`, {step, option});
+                    console.error(`Couldn't find :(`, { step, option });
                 }
             }
         }
@@ -830,7 +831,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
         newNodes.push(
             {
                 id: mainStepId,
-                data: { name: stepName, duration: 5000, rewards: [], line: "", actor: "", selectStepReward: selectStepReward, addChoice: addChoice, onClickEditScript: onClickEditScript, onStepNameChange: onStepNameChange, onStepProgressTypeChange: onStepProgressTypeChange, onStepScriptChange: onStepScriptChange, script: "" },
+                data: { name: stepName, duration: 5000, rewards: [], line: "", actor: "", onTogglePositiveOutcome: onTogglePositiveOutcome, selectStepReward: selectStepReward, addChoice: addChoice, onClickEditScript: onClickEditScript, onStepNameChange: onStepNameChange, onStepProgressTypeChange: onStepProgressTypeChange, onStepScriptChange: onStepScriptChange, script: "" },
                 position: { x: (stepsCreated * 300), y: 0 },
                 className: 'light',
                 type: "questEndStep",
@@ -906,15 +907,8 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
         );
 
     }
-    //const nodessa = useNodes();
-
     const onClickEditScript = (nodeId: string) => {
-        //console.log("nodessa", nodessa);
-
         setNodes((nds) => {
-
-
-
             const nodeg = nds.find(a => a.id == nodeId);
             setScriptBeingEdited(nodeg);
 
@@ -923,12 +917,26 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
             })
         }
         );
-
-        /*
-                const node = nodess.find(a => a.id === nodeId);
-                console.log("Opening " + nodeId, { node, nodess });
-                setScriptBeingEdited(node);*/
     }
+    const onTogglePositiveOutcome = (nodeId: string, value: boolean) => {
+        setUnsaved(true);
+        setNodes((nds) =>
+            nds.map((node) => {
+                if (node.id !== nodeId) {
+                    return node;
+                }
+
+
+                return {
+                    ...node,
+                    data: {
+                        ...node.data,
+                        isPositiveOutcome: value,
+                    },
+                };
+            })
+        );
+    };
 
     const editNode = (nodeBeingEdited: any, property: string, value: any) => {
 
@@ -1068,6 +1076,7 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                 line: data.line,
                 progressType: "END_QUEST",
                 duration: data.duration,
+                isPositiveOutcome: data.isPositiveOutcome,
                 editor: {
                     position: node?.position
                 },
@@ -1111,8 +1120,8 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
             console.log("result", result);
             if (result.data?.success) {
 
-				alert("Save complete! :D ");
-			} else {
+                alert("Save complete! :D ");
+            } else {
                 alert("Save failed :(");
             }
 
@@ -1254,14 +1263,14 @@ const QuestEditor = React.forwardRef((nftFunctions, ref) => {
                         <Button color="secondary" variant="contained" onClick={() => setIsOpenEditQuestModal(true)}>Edit Quest</Button>
 
                     </div>
-                    
-            <ManageQuest
-                isEditing={true}
-                quest={quest}
-                isOpen={isOpenEditQuestModal}
-                modalClosed={() => setIsOpenEditQuestModal(false)}
-                questSet={quest => { handleQuestUpdated(quest); }}
-                onQuestDelete={() => { alert("This hasn't been implemented yet") }} />
+
+                    <ManageQuest
+                        isEditing={true}
+                        quest={quest}
+                        isOpen={isOpenEditQuestModal}
+                        modalClosed={() => setIsOpenEditQuestModal(false)}
+                        questSet={quest => { handleQuestUpdated(quest); }}
+                        onQuestDelete={() => { alert("This hasn't been implemented yet") }} />
                 </div>
                 <main className="container main-content-wrapper main-wrapper m-t-md">
 
