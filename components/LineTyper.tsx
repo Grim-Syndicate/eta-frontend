@@ -1,6 +1,5 @@
 import GraphemeSplitter from 'grapheme-splitter';
 import React, { useEffect, useState } from 'react';
-import Typewriter from 'typewriter-effect';
 export default function LineTyper({
   children = null,
   className = '',
