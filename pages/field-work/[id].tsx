@@ -694,7 +694,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 										}
 
 										//return actor line
-										return <div key={index} className={`m-b-md take ${decoration}`}>
+										return <div key={index} className={`m-b-md take text-left ${decoration}`}>
 											<div className={`actor ${participantCSS}`}>{actor}</div>
 											<LineTyper key={index} className="line" avgTypingDelay={20} >{line}</LineTyper>
 										</div>

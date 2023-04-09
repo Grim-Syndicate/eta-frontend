@@ -1358,7 +1358,7 @@ input + .input-helper-text {
 }
 
 .quest .quest-script .take .actor{
-  flex: 1;
+  
   text-align: right;
   padding: 0 0.7rem 0 0;
   font-weight: 700;
