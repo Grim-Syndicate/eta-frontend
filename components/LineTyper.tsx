@@ -5,7 +5,8 @@ export default function LineTyper({
   className = '',
   avgTypingDelay = 70,
   stdTypingDelay = 25,
-  startDelay = 0
+  startDelay = 0,
+  scrollToBottomOfScript = () => {},
 }) {
   const [lineToType, setLineToType] = useState<string>('')
   const [finalLine, setFinalLine] = useState<string>('')
@@ -59,6 +60,8 @@ export default function LineTyper({
     let line = finalLine
     line += character
     const delay = delayGenerator();
+
+    scrollToBottomOfScript();
     await sleep(delay)
     setFinalLine(line)
   }

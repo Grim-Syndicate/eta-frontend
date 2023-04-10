@@ -280,6 +280,9 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 	const scrollToBottom = () => {
 		scriptEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	};
+	const scrollToBottomOfScript = () => {
+		scriptEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+	};
 
 	const renderNextStep = async (stepId: string) => {
 		if (!questFullScript) return
@@ -696,7 +699,7 @@ const SectionQuest = React.forwardRef((props: any, _ref: any) => {
 										//return actor line
 										return <div key={index} className={`m-b-md take text-left ${decoration}`}>
 											<div className={`actor ${participantCSS}`}>{actor}</div>
-											<LineTyper key={index} className="line" avgTypingDelay={20} >{line}</LineTyper>
+											<LineTyper key={index} className="line" avgTypingDelay={20} scrollToBottomOfScript={scrollToBottomOfScript} >{line}</LineTyper>
 										</div>
 									})
 									}
