@@ -53,7 +53,7 @@ const QuestStepRewardModal = (props: Props) => {
                     <div className="m-t-sm">Type</div>
                     <select style={{ width: "100%" }} value={type} onChange={(e) => setType(e.target.value)}>
                         <option value="ASTRA">ASTRA</option>
-                        <option value="OTHER">Other</option>
+                        {/*<option value="OTHER">Other</option>*/}
                     </select>
 
                     <div className="has-text-centered m-t-sm p-t-sm">
