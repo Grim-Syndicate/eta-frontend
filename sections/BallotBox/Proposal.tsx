@@ -14,7 +14,11 @@ import { WalletNotConnectedError } from '@solana/wallet-adapter-base';
 import styles from './Proposal.module.scss'
 import { Proposal, ProposalVote } from '../../models/Proposal';
 import ManageProposal from '../../components/ManageProposal';
-import { Box, Checkbox, CircularProgress, FormControlLabel, FormGroup } from '@mui/material';
+import { Box, Checkbox, CircularProgress, FormControlLabel, FormGroup, styled, Typography } from '@mui/material';
+import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ProposalOptionEnded from './ProposalOptionEnded';
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -37,6 +41,10 @@ const ProposalUI = (props: Props) => {
   const [previousVotes, setPreviousVotes] = useState<{[key:string]:boolean}>();
   const [gettingVotes, setGettingVotes] = useState<boolean>(false);
   const [votesLoaded, setVotesLoaded] = useState<boolean>(false);
+  const [gettingResults, setGettingResults] = useState<boolean>(false);
+  const [resultsLoaded, setResultsLoaded] = useState<boolean>(false);
+  const [results, setResults] = useState<any>();
+  const [totalVotes, setTotalVotes] = useState<number>(0);
 
   const getWalletVotes = async (proposalID:string) => {
     if(!publicKey) return
@@ -53,20 +61,48 @@ const ProposalUI = (props: Props) => {
     setGettingVotes(false)
   } 
 
+  const getResults = async (proposalID:string) => {
+    setGettingResults(true)
+    const resultsURL = `${domainURL}/ballot-box/results?proposalID=${proposalID}`
+    const result = await axios.get(resultsURL);
+    if(result.data && result.data.results){
+      let votes = 0
+      Object.values(result.data.results).map((proposal:any) => {
+        let proposalInSupport:number = proposal.inSupport || 0
+        let proposalAgainst:number = proposal.against || 0
+        let proposalVotes:number = proposalInSupport + proposalAgainst
+        if(proposalVotes > votes){
+          votes = proposalVotes
+        }
+      })
+      setTotalVotes(votes)
+      setResults(result.data.results)
+      setResultsLoaded(true)
+    }
+    setGettingResults(false)
+  } 
+
   useEffect(() => {
     if(gettingVotes || votesLoaded) return
     if (props.proposal) {
       const date = new Date();
       const now = Math.floor(date.getTime());
-
-      setHasEnded(now > props.proposal.enabledTo);
+      let ended = now > props.proposal.enabledTo;
+      setHasEnded(ended);
       getWalletVotes(props.proposal._id);
+      if(ended){
+        getResults(props.proposal._id)
+      }
     }
   }, [props?.proposal]);
 
   const getDuration = () => {
+    const date = new Date();
+    const now = Math.floor(date.getTime());
+    let ended = now > props.proposal.enabledTo;
+    setHasEnded(ended);
     const duration = intervalToDuration({
-      start: new Date(),
+      start: date,
       end: new Date(props.proposal.enabledTo)
     });
     
@@ -81,7 +117,7 @@ const ProposalUI = (props: Props) => {
   const [formattedDate, setFormattedDate] = useState('')
   const formatDate = (auctionEndDate:number) => {
     const d = new Date(auctionEndDate);
-    const fd = format(d, 'dd MMMM yyyy');
+    const fd = format(d, 'dd MMM yyyy');
     const ft = format(d, 'h:mm aa');
 
     setFormattedDate(`${fd} @ ${ft}`)
@@ -345,11 +381,16 @@ const ProposalUI = (props: Props) => {
           </Grid>
           <Grid item className="has-text-right">
             {(canCreateRaffle && !hasEnded) && (<button className="button is-tertiary is-small is-fullwidth m-b-sm" onClick={handleOpenUpdateProposalModal}>Edit</button>)}
-            <Grid item><strong>Time remaining</strong></Grid>
+            {!hasEnded && (<><Grid item><strong>Time remaining</strong></Grid>
               <Grid item className="has-text-primary has-text-right">
                 <div>{durationTime}</div>
                 <div className="has-text-natural-bone"><small>{formattedDate}</small></div>
-              </Grid>
+              </Grid> </>)}
+            {hasEnded && (<>
+              <Grid item><strong>Concluded: </strong><small className="has-text-natural-bone">{formattedDate}</small></Grid>
+              <Grid item><strong>Quorum: </strong><small className="has-text-natural-bone">{props.proposal.quorumRequired}</small> <strong>Total votes: </strong><small className="has-text-natural-bone">{totalVotes}</small></Grid>
+              <Grid item><strong>Support required: </strong><small className="has-text-natural-bone">{props.proposal.supportRequired}%+ of quorum</small></Grid>
+            </>)}
           </Grid>
         </Grid>
 
@@ -365,7 +406,7 @@ const ProposalUI = (props: Props) => {
 
           {gettingVotes && <CircularProgress color="inherit" className="m-r-sm" /> }
 
-          {props.proposal.options && checked && (<>
+          {hasEnded == false && props.proposal.options && checked && (<>
             <h4 className={`${styles['proposal-subtitle']}`}>Select the sections of the proposal that you support</h4>
             <a className={`${styles['proposal-select-all']}`} onClick={() => handleSelectAll(true)}>Select all</a> / <a className={`${styles['proposal-select-all']}`} onClick={() => handleSelectAll(false)}>none</a>
             <FormGroup>
@@ -393,6 +434,27 @@ const ProposalUI = (props: Props) => {
               }} checked={checked[index].inSupport} onChange={(event) => handleCheck(event, index)} />} label={option.name} />{children}</div>
             })}
             </FormGroup>
+          </>)}
+
+          {hasEnded && props.proposal.options && checked && results && (<>
+            <h4 className={`${styles['proposal-subtitle']}`}>Proposal final votes</h4>
+            {props.proposal.options.map((option, index) => {
+              let children = <></>
+              if(option.subOptions){
+                children = (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3, mt: option.subOptions.length > 0 ? 2 : 0 }}>
+                    {option.subOptions.map((subOption, subIndex) => {
+                      let proposalOptionID = checked[index].subOptions![subIndex].proposalOptionID
+                      return <ProposalOptionEnded key={`check${index}`} proposalVoteResult={results[proposalOptionID]} proposalOption={subOption} supportRequired={props.proposal.supportRequired} />
+                    })}
+                  </Box>
+                );
+              }
+              let proposalOptionID = checked[index].proposalOptionID
+              return <ProposalOptionEnded key={`check${index}`} proposalVoteResult={results[proposalOptionID]} proposalOption={checked[index]} supportRequired={props.proposal.supportRequired} >
+                {children}
+              </ProposalOptionEnded>
+            })}
           </>)}
 
         </div>

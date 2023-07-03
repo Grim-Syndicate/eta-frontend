@@ -19,6 +19,8 @@ export class AstraRaffle {
     walletTickets: number = 0;
 
     winners: Array<string> = [];
+    beneficiary?:string
+    beneficiaryPaymentID?:string
     type: string = "RAFFLE";
 
 }
