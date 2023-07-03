@@ -1354,12 +1354,11 @@ input + .input-helper-text {
   align-items: flex-start;
   justify-content: flex-start;
   text-align: left;
-  margin: 0 0 0.6rem;
   color: white;
 }
 
 .quest .quest-script .take .actor{
-  flex: 1;
+  
   text-align: right;
   padding: 0 0.7rem 0 0;
   font-weight: 700;
@@ -1499,6 +1498,40 @@ input + .input-helper-text {
 
 .quest-main .quest-rewards p {
   color: white;
+}
+
+.questChoiceButton {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 0, 0, 0.52);
+  border-radius: 10px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  background-color: transparent;
+  color: white;
+  padding: 10px 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 1.1em;
+  opacity:0;
+  
+  animation-name: questChoiceButtonanim;
+  animation-duration: 2s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+@keyframes questChoiceButtonanim {
+  from {opacity:0;}
+  to {opacity: 1};
+}
+.questChoiceButton:hover {
+  background-color:  black;
+}
+
+.questChoiceButton .icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
 }
 
 .quest-card {
@@ -1701,3 +1734,75 @@ input + .input-helper-text {
   color: var(--color-primary) !important;
 }
 
+.react-flow__handle {
+  height: 10px !important;
+  width: 10px !important;
+}
+
+.item {
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.questEndStepReward .count {
+  position: absolute;
+  left: calc(100% - 2px);
+  top: 2px;
+  transform: translateX(-100%);
+
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  border-radius: 10000px;
+  font-size: 0.15em;
+
+  width: 40px;
+  height:15px;
+  line-height: 15px;
+  text-align: center;
+}
+.questEndStepReward .count2 {
+  position: absolute;
+  left: calc(100% - 2px);
+  top: 2px;
+  transform: translateX(-100%);
+
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  border-radius: 10000px;
+  font-size: 0.15em;
+
+  width: 60px;
+  height:15px;
+  line-height: 15px;
+  text-align: center;
+}
+.questEndStepReward .chance {
+  position: absolute;
+  left: 0px;
+  top: 100%;
+  transform: translateY(-100%);
+
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+  border-radius: 10000px;
+  font-size: 0.15em;
+
+  width: 100%;
+  height:15px;
+  line-height: 15px;
+  text-align: center;
+}
+.node-default {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+  color: #222;
+  font-size: 12px;
+  padding: 10px;
+  text-align: center;
+  width: 150px;
+
+}
+.react-flow__edges {
+  z-index: 5000 !important;
+}

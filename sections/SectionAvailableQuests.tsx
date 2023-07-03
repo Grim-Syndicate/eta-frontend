@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Grid from '@mui/material/Grid';
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
+import { Quest } from "../models/Quests";
 
 const domainURL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -32,6 +33,18 @@ const SectionAvailableQuests = React.forwardRef(() => {
       }
   }
 
+  const getQuestHighestReward = (quest: Quest) => {
+    let highest = 0;
+    for (let step of quest.questScript) {
+      for (let reward of step.rewards) {
+        if (reward.rangeMax > highest) {
+          highest = reward.rangeMax;
+        }
+      }
+    }
+    return highest;
+  }
+
   return <section className="m-t-md m-b-lg">
   <div className="quest-cards">
     { isLoadingQuests && <CircularProgress color="inherit" /> }
@@ -51,9 +64,13 @@ const SectionAvailableQuests = React.forwardRef(() => {
                   <h4>{quest.planeType}</h4>
                   <h3>{quest.planeValue}</h3>
                   <h4>Possible Rewards</h4>
-                  { quest.rewards.map((reward:any) => {
-                    return <h3>Up to { reward.rangeMax } { reward.type }</h3>
-                  }) }
+
+
+                  <div>Up to {getQuestHighestReward(quest)} ASTRA</div>
+
+
+
+
                   <div className="has-text-centered m-t-sm p-t-sm">
                     <a href={`/field-work/${quest._id}`} className="button is-tertiary is-fullwidth">Start Assignment</a>
                   </div>
